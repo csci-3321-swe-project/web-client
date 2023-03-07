@@ -11,14 +11,14 @@ import {
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import NextLink from "next/link";
-import LoginForm from "../forms/login-form";
+import RegisterForm from "../forms/register-form";
 
-const LoginPage: NextPage = () => {
+const RegisterPage: NextPage = () => {
   return (
     <Container marginTop={10}>
       <Card>
         <CardHeader>
-          <Heading>Mock Login</Heading>
+          <Heading>Mock Register</Heading>
         </CardHeader>
         <CardBody>
           <Stack spacing={5}>
@@ -27,13 +27,13 @@ const LoginPage: NextPage = () => {
               purposes only.
             </Text>
             <Text>
-              To register a mock user, follow the
-              <NextLink href="/register" passHref legacyBehavior>
-                <Link> registration flow.</Link>
+              To log in as a mock user, follow the
+              <NextLink href="/login" passHref legacyBehavior>
+                <Link> login flow.</Link>
               </NextLink>
             </Text>
             <Divider />
-            <LoginForm />
+            <RegisterForm />
           </Stack>
         </CardBody>
       </Card>
@@ -41,4 +41,4 @@ const LoginPage: NextPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
