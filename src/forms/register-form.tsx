@@ -73,22 +73,22 @@ const RegisterForm: FunctionComponent = () => {
             <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={errors.lastName !== undefined} isRequired>
-            <FormLabel>LastName</FormLabel>
+            <FormLabel>Last Name</FormLabel>
             <Input type="text" {...register("lastName")} />
             <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={errors.role !== undefined} isRequired>
-            <FormLabel>Role</FormLabel>
-            <Select disabled={options.isLoading} {...register("role")}>
-              {options.data?.roles.map(({ name, value }) => (
-                <option key={value} value={value}>
-                  {name}
-                </option>
-              ))}
-            </Select>
-            <FormErrorMessage>{errors.role?.message}</FormErrorMessage>
-          </FormControl>
         </HStack>
+        <FormControl isInvalid={errors.role !== undefined} isRequired>
+          <FormLabel>Role</FormLabel>
+          <Select disabled={options.isLoading} {...register("role")}>
+            {options.data?.roles.map(({ name, value }) => (
+              <option key={value} value={value}>
+                {name}
+              </option>
+            ))}
+          </Select>
+          <FormErrorMessage>{errors.role?.message}</FormErrorMessage>
+        </FormControl>
         <Button
           isLoading={isSubmitting}
           alignSelf="end"
