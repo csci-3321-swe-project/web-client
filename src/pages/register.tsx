@@ -24,7 +24,8 @@ const RegisterPage: NextPage = () => {
           <Stack spacing={5}>
             <Text>
               This user authentication system should be used for demonstration
-              purposes only.
+              purposes only. Users created through this system are marked as
+              mock users.
             </Text>
             <Text>
               To log in as a mock user, follow the
