@@ -40,11 +40,13 @@ const RegisterForm: FunctionComponent = () => {
     resolver: zodResolver(schema),
   });
 
+  console.log(errors);
+
   const submitHandler: SubmitHandler<Values> = async (data) => {
     try {
-      const res = await client.post("/users", data);
-      toast({ status: "success", title: "User Created" });
+      await client.post("/users", data);
       await router.push("/login");
+      toast({ status: "success", title: "User Created" });
     } catch (e) {
       if (e instanceof AxiosError) {
         toast({

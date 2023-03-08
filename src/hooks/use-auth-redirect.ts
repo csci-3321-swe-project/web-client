@@ -1,16 +1,16 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import useToken from "./use-token";
+import useAuth from "./use-auth";
 
 const useAuthRedirect = (path: string) => {
   const router = useRouter();
-  const [token] = useToken();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (!token) {
+    if (!isAuthenticated) {
       router.push(path);
     }
-  }, [token, path, router]);
+  }, [isAuthenticated, path, router]);
 };
 
 export default useAuthRedirect;
