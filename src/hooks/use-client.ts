@@ -7,7 +7,7 @@ const useClient = () => {
   const client = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
   });
 
