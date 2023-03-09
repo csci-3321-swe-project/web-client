@@ -19,7 +19,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.5",
-    "use-local-storage": "^2.3.6",
+    "swr": "^2.1.0",
+    "use-local-storage-state": "^18.2.1",
     "yup": "^1.0.2",
     "zod": "^3.21.2"
   },

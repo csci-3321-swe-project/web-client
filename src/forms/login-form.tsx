@@ -9,12 +9,11 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import z from "zod";
+import useAuth from "../hooks/use-auth";
 import useClient from "../hooks/use-client";
-import useToken from "../hooks/use-token";
 
 const schema = z.object({
   email: z.string().email(),
@@ -23,10 +22,9 @@ const schema = z.object({
 type Values = z.infer<typeof schema>;
 
 const LoginForm: FunctionComponent = () => {
+  const { login } = useAuth();
   const client = useClient();
-  const router = useRouter();
   const toast = useToast();
-  const [, setToken] = useToken();
   const {
     register,
     handleSubmit,
@@ -38,8 +36,7 @@ const LoginForm: FunctionComponent = () => {
   const submitHandler: SubmitHandler<Values> = async (data) => {
     try {
       const res = await client.post("/tokens", data);
-      setToken(res.data);
-      await router.push("/");
+      login(res.data);
     } catch (e) {
       if (e instanceof AxiosError) {
         toast({

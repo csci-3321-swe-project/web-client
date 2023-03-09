@@ -1,7 +1,7 @@
-import useLocalStorage from "use-local-storage";
+import useLocalStorageState from "use-local-storage-state";
 
 const useToken = () => {
-  return useLocalStorage("token", "");
+  return useLocalStorageState("token");
 };
 
 export default useToken;
