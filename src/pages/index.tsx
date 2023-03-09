@@ -2,6 +2,7 @@ import {
   Badge,
   Box,
   Button,
+  Center,
   Container,
   Flex,
   Heading,
@@ -13,6 +14,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
+import NextLink from "next/link";
 import Show from "../components/show";
 import useAccount from "../hooks/use-account";
 import useAuthRedirect from "../hooks/use-auth-redirect";
@@ -24,7 +26,9 @@ const Home: NextPage = () => {
     <>
       <Container paddingY={10} maxWidth="container.lg">
         {account.isLoading || !account.data ? (
-          <Spinner />
+          <Center>
+            <Spinner />
+          </Center>
         ) : (
           <Flex align="center">
             <Stack>
@@ -39,9 +43,11 @@ const Home: NextPage = () => {
             </Stack>
             <Spacer />
             <Show roles={["ADMINISTRATOR"]}>
-              <Button isDisabled colorScheme="blue">
-                New Course
-              </Button>
+              <NextLink href="/courses/create" passHref legacyBehavior>
+                <Button as="a" colorScheme="blue">
+                  New Course
+                </Button>
+              </NextLink>
             </Show>
           </Flex>
         )}
