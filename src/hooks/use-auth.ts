@@ -19,7 +19,7 @@ const useAuth = () => {
     toast({ status: "success", title: "Logout Success" });
   };
 
-  return { login, logout, isAuthenticated: !!token };
+  return { login, logout, isAuthenticated: token !== null };
 };
 
 export default useAuth;
