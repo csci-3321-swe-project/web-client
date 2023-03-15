@@ -8,7 +8,7 @@ const useCourse = (id?: string) => {
   const { isAuthenticated } = useAuth();
 
   return useSwr(
-    isAuthenticated ? `/courses/${id}` : null,
+    isAuthenticated && id ? `/courses/${id}` : null,
     async (path) => (await client.get<Course>(path)).data
   );
 };

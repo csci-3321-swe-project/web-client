@@ -13,10 +13,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { useRouter } from "next/router";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import useClient from "../hooks/use-client";
+import useCourse from "../hooks/use-course";
 import useOptions from "../hooks/use-options";
 import { Course } from "../types";
 
@@ -30,26 +31,28 @@ const schema = z.object({
 
 type Values = z.infer<typeof schema>;
 
-const CreateCourseForm: FunctionComponent = () => {
-  const client = useClient();
+const EditCourseForm: FunctionComponent = () => {
   const router = useRouter();
+  const courseId = router.query.courseId?.toString();
+  const course = useCourse(courseId);
+  const client = useClient();
   const toast = useToast();
   const options = useOptions();
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
     resolver: zodResolver(schema),
+    defaultValues: useMemo(() => course.data, [course.data]),
   });
-
-  console.log(errors);
 
   const submitHandler: SubmitHandler<Values> = async (data) => {
     try {
-      const newCourse = await client.post<Course>("/courses", data);
-      await router.push(`/courses/${newCourse.data.id}`);
-      toast({ status: "success", title: "Course Created" });
+      await client.put<Course>(`/courses/${courseId}`, data);
+      await router.push(`/courses/${courseId}`);
+      toast({ status: "success", title: "Course Updated" });
     } catch (e) {
       if (e instanceof AxiosError) {
         toast({
@@ -63,16 +66,20 @@ const CreateCourseForm: FunctionComponent = () => {
     }
   };
 
+  useEffect(() => {
+    reset(course.data);
+  }, [course.data, reset]);
+
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <Stack>
-        <FormControl isInvalid={errors.term !== undefined} isRequired>
+        <FormControl
+          isDisabled={options.isLoading || course.isLoading}
+          isInvalid={errors.term !== undefined}
+          isRequired
+        >
           <FormLabel>Term</FormLabel>
-          <Select
-            placeholder="Select Term"
-            disabled={options.isLoading}
-            {...register("term")}
-          >
+          <Select placeholder="Select Term" {...register("term")}>
             {options.data?.terms.map(({ name, value }) => (
               <option key={value} value={value}>
                 {name}
@@ -82,13 +89,13 @@ const CreateCourseForm: FunctionComponent = () => {
           <FormErrorMessage>{errors.department?.message}</FormErrorMessage>
         </FormControl>
         <HStack>
-          <FormControl isInvalid={errors.department !== undefined} isRequired>
+          <FormControl
+            isDisabled={options.isLoading || course.isLoading}
+            isInvalid={errors.department !== undefined}
+            isRequired
+          >
             <FormLabel>Department</FormLabel>
-            <Select
-              placeholder="Select Department"
-              disabled={options.isLoading}
-              {...register("department")}
-            >
+            <Select placeholder="Select Department" {...register("department")}>
               {options.data?.departments.map(({ name, value }) => (
                 <option key={value} value={value}>
                   {name}
@@ -97,33 +104,46 @@ const CreateCourseForm: FunctionComponent = () => {
             </Select>
             <FormErrorMessage>{errors.department?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={errors.code !== undefined} isRequired>
+          <FormControl
+            isDisabled={course.isLoading}
+            isInvalid={errors.code !== undefined}
+            isRequired
+          >
             <FormLabel>Code</FormLabel>
             <Input type="number" {...register("code")} />
             <FormErrorMessage>{errors.code?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
-        <FormControl isInvalid={errors.name !== undefined} isRequired>
+        <FormControl
+          isDisabled={course.isLoading}
+          isInvalid={errors.name !== undefined}
+          isRequired
+        >
           <FormLabel>Name</FormLabel>
           <Input type="text" {...register("name")} />
           <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={errors.description !== undefined} isRequired>
+        <FormControl
+          isDisabled={course.isLoading}
+          isInvalid={errors.description !== undefined}
+          isRequired
+        >
           <FormLabel>Description</FormLabel>
           <Textarea {...register("description")} />
           <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
         </FormControl>
         <Button
+          isDisabled={course.isLoading}
           isLoading={isSubmitting}
           alignSelf="end"
           colorScheme="blue"
           type="submit"
         >
-          Create Course
+          Update Course
         </Button>
       </Stack>
     </form>
   );
 };
 
-export default CreateCourseForm;
+export default EditCourseForm;

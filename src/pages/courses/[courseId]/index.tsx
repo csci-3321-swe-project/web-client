@@ -52,9 +52,15 @@ const CoursePage: NextPage = () => {
                 <Heading>{`${course.data.name}`} </Heading>
               </Stack>
               <Spacer />
-              <Button colorScheme="blue" leftIcon={<EditIcon />}>
-                Edit
-              </Button>
+              <NextLink
+                href={`/courses/${course.data.id}/edit`}
+                passHref
+                legacyBehavior
+              >
+                <Button as="a" colorScheme="blue" leftIcon={<EditIcon />}>
+                  Edit
+                </Button>
+              </NextLink>
             </Flex>
           </Stack>
         )}

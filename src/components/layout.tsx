@@ -26,7 +26,7 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
       <Flex direction="row" align="center" padding={5} width="100%" shadow="md">
         <NextLink href="/" passHref legacyBehavior>
           <Link color="red.800" fontWeight="bold" fontSize="xl">
-            TigerPaws
+            Trinity Register
           </Link>
         </NextLink>
         <Spacer />
