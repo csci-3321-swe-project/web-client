@@ -1,4 +1,4 @@
-import { ArrowBackIcon, EditIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, EditIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import {
   Badge,
   Box,
@@ -16,12 +16,10 @@ import {
 import Case from "case";
 import { NextPage } from "next";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
-import useCourse from "../../../hooks/use-course";
+import useCurrentCourse from "../../../hooks/use-current-course";
 
 const CoursePage: NextPage = () => {
-  const router = useRouter();
-  const course = useCourse(router.query.courseId?.toString());
+  const course = useCurrentCourse();
 
   return (
     <>
@@ -66,16 +64,43 @@ const CoursePage: NextPage = () => {
         )}
       </Container>
       <Container paddingY={10}>
-        <Stack spacing={5}>
-          <Heading fontSize="3xl">Description</Heading>
-          <Text>{course.data?.description}</Text>
-          <Heading fontSize="3xl">Sections</Heading>
-          <Stack>
-            <Box backgroundColor="gray.200" height={50} />
-            <Box backgroundColor="gray.100" height={50} />
-            <Box backgroundColor="gray.50" height={50} />
+        {course.isLoading || !course.data ? (
+          <Center>
+            <Spinner />
+          </Center>
+        ) : (
+          <Stack spacing={5}>
+            <Heading fontSize="3xl">Description</Heading>
+            <Text>{course.data.description}</Text>
+            <Heading fontSize="3xl">Sections</Heading>
+            {course.data.courseSections.length ? (
+              <Stack>
+                <Box backgroundColor="gray.200" height={50} />
+                <Box backgroundColor="gray.100" height={50} />
+                <Box backgroundColor="gray.50" height={50} />
+              </Stack>
+            ) : (
+              <Stack spacing={5} paddingY={10} rounded="md" align="center">
+                <Text variant="secondary">
+                  There are no sections for this course.
+                </Text>
+                <NextLink
+                  href={`/courses/${course.data.id}/sections/create`}
+                  passHref
+                  legacyBehavior
+                >
+                  <Button
+                    variant="outline"
+                    as="a"
+                    leftIcon={<PlusSquareIcon />}
+                  >
+                    Create
+                  </Button>
+                </NextLink>
+              </Stack>
+            )}
           </Stack>
-        </Stack>
+        )}
       </Container>
     </>
   );

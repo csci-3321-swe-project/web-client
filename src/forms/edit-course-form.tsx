@@ -17,7 +17,7 @@ import { FunctionComponent, useEffect, useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import useClient from "../hooks/use-client";
-import useCourse from "../hooks/use-course";
+import useCurrentCourse from "../hooks/use-current-course";
 import useOptions from "../hooks/use-options";
 import { Course } from "../types";
 
@@ -32,9 +32,8 @@ const schema = z.object({
 type Values = z.infer<typeof schema>;
 
 const EditCourseForm: FunctionComponent = () => {
+  const course = useCurrentCourse();
   const router = useRouter();
-  const courseId = router.query.courseId?.toString();
-  const course = useCourse(courseId);
   const client = useClient();
   const toast = useToast();
   const options = useOptions();
@@ -49,9 +48,13 @@ const EditCourseForm: FunctionComponent = () => {
   });
 
   const submitHandler: SubmitHandler<Values> = async (data) => {
+    if (!course.data) {
+      return;
+    }
+
     try {
-      await client.put<Course>(`/courses/${courseId}`, data);
-      await router.push(`/courses/${courseId}`);
+      await client.put<Course>(`/courses/${course.data.id}`, data);
+      await router.push(`/courses/${course.data.id}`);
       toast({ status: "success", title: "Course Updated" });
     } catch (e) {
       if (e instanceof AxiosError) {

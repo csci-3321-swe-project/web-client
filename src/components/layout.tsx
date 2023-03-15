@@ -36,9 +36,7 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
       </Flex>
       <Box>{children}</Box>
       <Center padding={5}>
-        <Text as="small" color="blackAlpha.500">
-          &copy; Trinity University, 2023
-        </Text>
+        <Text variant="secondary">&copy; Trinity University, 2023</Text>
       </Center>
     </Stack>
   );

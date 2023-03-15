@@ -27,6 +27,7 @@ export type Course = {
   department: Department;
   code: number;
   description: string;
+  courseSections: CourseSection[];
 };
 
 export type CourseSection = {
