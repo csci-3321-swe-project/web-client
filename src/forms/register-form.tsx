@@ -40,8 +40,6 @@ const RegisterForm: FunctionComponent = () => {
     resolver: zodResolver(schema),
   });
 
-  console.log(errors);
-
   const submitHandler: SubmitHandler<Values> = async (data) => {
     try {
       await client.post("/users", data);

@@ -26,7 +26,7 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
       <Flex direction="row" align="center" padding={5} width="100%" shadow="md">
         <NextLink href="/" passHref legacyBehavior>
           <Link color="red.800" fontWeight="bold" fontSize="xl">
-            TigerPaws
+            Trinity Register
           </Link>
         </NextLink>
         <Spacer />
@@ -36,9 +36,7 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
       </Flex>
       <Box>{children}</Box>
       <Center padding={5}>
-        <Text as="small" color="blackAlpha.500">
-          &copy; Trinity University, 2023
-        </Text>
+        <Text variant="secondary">&copy; Trinity University, 2023</Text>
       </Center>
     </Stack>
   );
