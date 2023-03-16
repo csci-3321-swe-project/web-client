@@ -1,8 +1,9 @@
 import { ArrowBackIcon, EditIcon, PlusSquareIcon } from "@chakra-ui/icons";
 import {
   Badge,
-  Box,
   Button,
+  Card,
+  CardBody,
   Center,
   Container,
   Flex,
@@ -74,30 +75,49 @@ const CoursePage: NextPage = () => {
             <Text>{course.data.description}</Text>
             <Heading fontSize="3xl">Sections</Heading>
             {course.data.courseSections.length ? (
-              <Stack>
-                <Box backgroundColor="gray.200" height={50} />
-                <Box backgroundColor="gray.100" height={50} />
-                <Box backgroundColor="gray.50" height={50} />
+              <Stack spacing={5}>
+                {course.data.courseSections.map(({ id }) => (
+                  <Text key={id}>{id}</Text>
+                ))}
+                <Center>
+                  <NextLink
+                    href={`/courses/${course.data.id}/sections/create`}
+                    passHref
+                    legacyBehavior
+                  >
+                    <Button
+                      variant="outline"
+                      as="a"
+                      leftIcon={<PlusSquareIcon />}
+                    >
+                      Create
+                    </Button>
+                  </NextLink>
+                </Center>
               </Stack>
             ) : (
-              <Stack spacing={5} paddingY={10} rounded="md" align="center">
-                <Text variant="secondary">
-                  There are no sections for this course.
-                </Text>
-                <NextLink
-                  href={`/courses/${course.data.id}/sections/create`}
-                  passHref
-                  legacyBehavior
-                >
-                  <Button
-                    variant="outline"
-                    as="a"
-                    leftIcon={<PlusSquareIcon />}
-                  >
-                    Create
-                  </Button>
-                </NextLink>
-              </Stack>
+              <Card paddingY={10} variant="outline">
+                <CardBody>
+                  <Stack align="center" spacing={5}>
+                    <Text variant="secondary">
+                      There are no sections for this course.
+                    </Text>
+                    <NextLink
+                      href={`/courses/${course.data.id}/sections/create`}
+                      passHref
+                      legacyBehavior
+                    >
+                      <Button
+                        variant="outline"
+                        as="a"
+                        leftIcon={<PlusSquareIcon />}
+                      >
+                        Create
+                      </Button>
+                    </NextLink>
+                  </Stack>
+                </CardBody>
+              </Card>
             )}
           </Stack>
         )}

@@ -43,8 +43,6 @@ const CreateCourseForm: FunctionComponent = () => {
     resolver: zodResolver(schema),
   });
 
-  console.log(errors);
-
   const submitHandler: SubmitHandler<Values> = async (data) => {
     try {
       const newCourse = await client.post<Course>("/courses", data);

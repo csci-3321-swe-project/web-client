@@ -41,6 +41,7 @@ const EditCourseForm: FunctionComponent = () => {
     reset,
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
     resolver: zodResolver(schema),
