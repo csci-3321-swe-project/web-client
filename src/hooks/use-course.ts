@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import useSwr from "swr";
 import { Course } from "../types";
 import useAuth from "./use-auth";
@@ -7,7 +8,7 @@ const useCourse = (id?: string) => {
   const client = useClient();
   const { isAuthenticated } = useAuth();
 
-  return useSwr(
+  return useSwr<Course, AxiosError>(
     isAuthenticated && id ? `/courses/${id}` : null,
     async (path) => (await client.get<Course>(path)).data
   );

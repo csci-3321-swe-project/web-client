@@ -32,7 +32,7 @@ const EditCoursePage: NextPage = () => {
                 variant="link"
                 leftIcon={<ArrowBackIcon />}
               >
-                Course Details
+                {course.data?.name}
               </Button>
             </NextLink>
             <Heading>Edit Course</Heading>

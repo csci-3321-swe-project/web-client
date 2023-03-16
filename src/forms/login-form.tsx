@@ -61,7 +61,7 @@ const LoginForm: FunctionComponent = () => {
         <Button
           isLoading={isSubmitting}
           alignSelf="end"
-          colorScheme="blue"
+          colorScheme="teal"
           type="submit"
         >
           Login

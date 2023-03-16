@@ -1,10 +1,10 @@
-import { PlusSquareIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 import {
+  Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
   HStack,
-  IconButton,
   Input,
   Stack,
   Tag,
@@ -104,13 +104,15 @@ const PeoplePickerForm: FunctionComponent<PeoplePickerFormProps> = ({
                 {...register("emailAddress")}
                 type="email"
               />
-              <IconButton
+              <Button
                 variant="outline"
                 isLoading={isSubmitting}
-                icon={<PlusSquareIcon />}
-                aria-label="add"
+                leftIcon={<AddIcon />}
+                colorScheme="teal"
                 type="submit"
-              />
+              >
+                Add
+              </Button>
             </HStack>
             <FormErrorMessage>{errors.emailAddress?.message}</FormErrorMessage>
           </FormControl>

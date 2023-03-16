@@ -1,3 +1,4 @@
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -20,6 +21,7 @@ import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
 import useOptions from "../hooks/use-options";
 import { Course } from "../types";
+import { placeholders } from "../utilities/constants";
 
 const schema = z.object({
   name: z.string(),
@@ -76,7 +78,7 @@ const EditCourseForm: FunctionComponent = () => {
 
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <Stack>
+      <Stack spacing={5}>
         <FormControl
           isDisabled={options.isLoading || course.isLoading}
           isInvalid={errors.term !== undefined}
@@ -114,7 +116,11 @@ const EditCourseForm: FunctionComponent = () => {
             isRequired
           >
             <FormLabel>Code</FormLabel>
-            <Input type="number" {...register("code")} />
+            <Input
+              placeholder={placeholders.code}
+              type="number"
+              {...register("code")}
+            />
             <FormErrorMessage>{errors.code?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
@@ -124,7 +130,11 @@ const EditCourseForm: FunctionComponent = () => {
           isRequired
         >
           <FormLabel>Name</FormLabel>
-          <Input type="text" {...register("name")} />
+          <Input
+            placeholder={placeholders.courseName}
+            type="text"
+            {...register("name")}
+          />
           <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
         </FormControl>
         <FormControl
@@ -133,17 +143,21 @@ const EditCourseForm: FunctionComponent = () => {
           isRequired
         >
           <FormLabel>Description</FormLabel>
-          <Textarea {...register("description")} />
+          <Textarea
+            placeholder={placeholders.description}
+            {...register("description")}
+          />
           <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
         </FormControl>
         <Button
           isDisabled={course.isLoading}
           isLoading={isSubmitting}
           alignSelf="end"
-          colorScheme="blue"
+          colorScheme="teal"
           type="submit"
+          rightIcon={<ArrowForwardIcon />}
         >
-          Update Course
+          Update
         </Button>
       </Stack>
     </form>

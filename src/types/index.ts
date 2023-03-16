@@ -34,7 +34,8 @@ export type CourseSection = {
   id: string;
   courseId: string;
   meetings: Meeting[];
-  instructorId: string;
+  instructorIds: string[];
+  instructors: User[];
 };
 
 export enum DayOfWeek {

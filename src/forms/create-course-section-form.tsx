@@ -1,4 +1,4 @@
-import { DeleteIcon, PlusSquareIcon } from "@chakra-ui/icons";
+import { AddIcon, ArrowForwardIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
   Alert,
   Button,
@@ -10,7 +10,6 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
-  IconButton,
   Input,
   Stack,
   Text,
@@ -128,13 +127,16 @@ const CreateCourseSectionForm: FunctionComponent = () => {
             <Card key={meeting.id} variant="outline">
               <CardBody>
                 <Stack spacing={5}>
-                  <IconButton
+                  <Button
+                    leftIcon={<DeleteIcon />}
                     alignSelf="end"
                     variant="outline"
-                    aria-label="delete"
+                    colorScheme="red"
                     onClick={() => meetings.remove(i)}
-                    icon={<DeleteIcon />}
-                  />
+                    size="sm"
+                  >
+                    Delete
+                  </Button>
                   <FormControl isRequired>
                     <FormLabel>Location</FormLabel>
                     <Input
@@ -201,26 +203,29 @@ const CreateCourseSectionForm: FunctionComponent = () => {
           ))}
           {meetings.fields.length ? (
             <Center>
-              <IconButton
+              <Button
                 variant="outline"
-                aria-label="add-meeting"
                 onClick={() => meetings.append(defaultMeeting)}
-                icon={<PlusSquareIcon />}
-              />
+                leftIcon={<AddIcon />}
+                size="sm"
+                colorScheme="teal"
+              >
+                Add
+              </Button>
             </Center>
           ) : (
             <Card paddingY={10} variant="outline">
               <CardBody>
                 <Stack align="center" spacing={5}>
                   <Text variant="secondary">
-                    There are no sections for this course.
+                    There are no meetings for this section.
                   </Text>
                   <Button
                     onClick={() => meetings.append(defaultMeeting)}
                     variant="outline"
-                    leftIcon={<PlusSquareIcon />}
+                    leftIcon={<AddIcon />}
                   >
-                    Create
+                    Add
                   </Button>
                 </Stack>
               </CardBody>
@@ -230,8 +235,9 @@ const CreateCourseSectionForm: FunctionComponent = () => {
           <Button
             isLoading={isSubmitting}
             alignSelf="end"
-            colorScheme="blue"
+            colorScheme="teal"
             type="submit"
+            rightIcon={<ArrowForwardIcon />}
           >
             Create
           </Button>
