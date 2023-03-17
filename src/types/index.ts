@@ -17,6 +17,7 @@ export type User = {
 export type Registration = {
   id: string;
   userId: string;
+  user: User;
   courseSectionId: string;
 };
 

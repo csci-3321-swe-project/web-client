@@ -1,12 +1,19 @@
-import { DeleteIcon, EditIcon, TimeIcon } from "@chakra-ui/icons";
 import {
+  DeleteIcon,
+  EditIcon,
+  SmallAddIcon,
+  SmallCloseIcon,
+  TimeIcon,
+} from "@chakra-ui/icons";
+import {
+  Avatar,
   Button,
   Card,
   CardBody,
+  Center,
   Heading,
-  ListItem,
-  OrderedList,
   Spacer,
+  Spinner,
   Stack,
   Tag,
   TagLeftIcon,
@@ -17,8 +24,10 @@ import {
 import Case from "case";
 import NextLink from "next/link";
 import { FunctionComponent, useState } from "react";
+import useAccount from "../hooks/use-account";
 import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
+import useRegistrations from "../hooks/use-registrations";
 import { CourseSection, Role } from "../types";
 import Show from "./show";
 
@@ -31,8 +40,47 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
 }) => {
   const toast = useToast();
   const client = useClient();
+  const account = useAccount();
   const course = useCurrentCourse();
+  const registrations = useRegistrations(course.data?.id, courseSection.id);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const isRegistered = registrations.data?.some(
+    (r) => r.userId === account.data?.id
+  );
+
+  const registerCourseSection = async () => {
+    try {
+      setIsRegistering(true);
+      await client.post(
+        `/courses/${course.data?.id}/sections/${courseSection.id}/registrations`
+      );
+      await registrations.mutate();
+      toast({ status: "success", title: "Registered for Course Section" });
+    } catch (err) {
+      toast({ status: "error", title: "Error Registering for Course Section" });
+    } finally {
+      setIsRegistering(false);
+    }
+  };
+
+  const unregisterCourseSection = async () => {
+    try {
+      setIsRegistering(true);
+      await client.delete(
+        `/courses/${course.data?.id}/sections/${courseSection.id}/registrations`
+      );
+      await registrations.mutate();
+      toast({ status: "success", title: "Unregistered for Course Section" });
+    } catch (err) {
+      toast({
+        status: "error",
+        title: "Error Unregistering for Course Section",
+      });
+    } finally {
+      setIsRegistering(false);
+    }
+  };
 
   const deleteCourseSection = async () => {
     try {
@@ -49,12 +97,30 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
     }
   };
 
+  if (
+    course.isLoading ||
+    !course.data ||
+    registrations.isLoading ||
+    !registrations.data ||
+    account.isLoading ||
+    !account.data
+  ) {
+    return (
+      <Center paddingY={10}>
+        <Stack align="center" spacing={5}>
+          <Text variant="secondary">Loading...</Text>
+          <Spinner />
+        </Stack>
+      </Center>
+    );
+  }
+
   return (
     <Card key={courseSection.id}>
       <CardBody>
         <Stack spacing={5}>
-          <Show roles={[Role.ADMINISTRATOR]}>
-            <Wrap justify="end">
+          <Wrap justify="end">
+            <Show roles={[Role.ADMINISTRATOR]}>
               <NextLink
                 href={`/courses/${course.data?.id}/sections/${courseSection.id}/edit`}
               >
@@ -79,8 +145,29 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
               >
                 Delete
               </Button>
-            </Wrap>
-          </Show>
+            </Show>
+            {isRegistered ? (
+              <Button
+                size="sm"
+                colorScheme="red"
+                leftIcon={<SmallCloseIcon />}
+                isLoading={isRegistering}
+                onClick={() => unregisterCourseSection()}
+              >
+                Unregister
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                colorScheme="teal"
+                leftIcon={<SmallAddIcon />}
+                isLoading={isRegistering}
+                onClick={() => registerCourseSection()}
+              >
+                Register
+              </Button>
+            )}
+          </Wrap>
           <Wrap>
             <Stack>
               <Heading fontSize="md">Instructors</Heading>
@@ -108,28 +195,20 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
               ))}
             </Stack>
           </Wrap>
-          <OrderedList listStylePosition="inside" spacing={2}>
-            {/* TODO */}
-            <ListItem>
-              Alice Worthington &nbsp;
-              <Tag size="sm" colorScheme="green">
-                Registered
-              </Tag>
-            </ListItem>
-            <ListItem>
-              Bob Sue &nbsp;
-              <Tag size="sm" colorScheme="green">
-                Registered
-              </Tag>
-            </ListItem>
-            <ListItem>
-              John Doe &nbsp;
-              <Tag size="sm" colorScheme="yellow">
-                Waitlisted
-              </Tag>
-            </ListItem>
-            {/* TODO */}
-          </OrderedList>
+          <Stack>
+            {registrations.data.map((registration) => {
+              const fullName = `${registration.user.firstName} ${registration.user.lastName}`;
+              return (
+                <Wrap key={registration.id} spacing={2} align="center">
+                  <Avatar name={fullName} size="xs" />
+                  <Text>{fullName}</Text>
+                  <Tag size="sm" colorScheme="green">
+                    Registered
+                  </Tag>
+                </Wrap>
+              );
+            })}
+          </Stack>
         </Stack>
       </CardBody>
     </Card>
