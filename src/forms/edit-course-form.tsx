@@ -1,13 +1,16 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Center,
   FormControl,
   FormErrorMessage,
   FormLabel,
   HStack,
   Input,
   Select,
+  Spinner,
   Stack,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -43,7 +46,6 @@ const EditCourseForm: FunctionComponent = () => {
     reset,
     register,
     handleSubmit,
-    control,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
     resolver: zodResolver(schema),
@@ -76,6 +78,17 @@ const EditCourseForm: FunctionComponent = () => {
   useEffect(() => {
     reset(course.data);
   }, [course.data, reset]);
+
+  if (course.isLoading || !course.data || options.isLoading || !options.data) {
+    return (
+      <Center paddingY={10}>
+        <Stack align="center" spacing={5}>
+          <Text variant="secondary">Loading...</Text>
+          <Spinner />
+        </Stack>
+      </Center>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(submitHandler)}>

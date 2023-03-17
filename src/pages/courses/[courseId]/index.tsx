@@ -22,8 +22,10 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import CourseSection from "../../../components/course-section";
+import Show from "../../../components/show";
 import useClient from "../../../hooks/use-client";
 import useCurrentCourse from "../../../hooks/use-current-course";
+import { Role } from "../../../types";
 
 const CoursePage: NextPage = () => {
   const course = useCurrentCourse();
@@ -90,23 +92,25 @@ const CoursePage: NextPage = () => {
               <Heading>{`${course.data.name}`} </Heading>
             </Stack>
             <Spacer />
-            <NextLink
-              href={`/courses/${course.data.id}/edit`}
-              passHref
-              legacyBehavior
-            >
-              <Button as="a" colorScheme="teal" leftIcon={<EditIcon />}>
-                Edit
+            <Show roles={[Role.ADMINISTRATOR]}>
+              <NextLink
+                href={`/courses/${course.data.id}/edit`}
+                passHref
+                legacyBehavior
+              >
+                <Button as="a" colorScheme="teal" leftIcon={<EditIcon />}>
+                  Edit
+                </Button>
+              </NextLink>
+              <Button
+                isLoading={isDeleting}
+                onClick={() => deleteCourse()}
+                colorScheme="red"
+                leftIcon={<DeleteIcon />}
+              >
+                Delete
               </Button>
-            </NextLink>
-            <Button
-              isLoading={isDeleting}
-              onClick={() => deleteCourse()}
-              colorScheme="red"
-              leftIcon={<DeleteIcon />}
-            >
-              Delete
-            </Button>
+            </Show>
           </Flex>
         </Stack>
       </Container>
@@ -123,30 +127,8 @@ const CoursePage: NextPage = () => {
                   courseSection={courseSection}
                 />
               ))}
-              <Center>
-                <NextLink
-                  href={`/courses/${course.data.id}/sections/create`}
-                  passHref
-                  legacyBehavior
-                >
-                  <Button
-                    variant="outline"
-                    as="a"
-                    leftIcon={<AddIcon />}
-                    colorScheme="teal"
-                  >
-                    Add
-                  </Button>
-                </NextLink>
-              </Center>
-            </Stack>
-          ) : (
-            <Card paddingY={10} variant="outline">
-              <CardBody>
-                <Stack align="center" spacing={5}>
-                  <Text variant="secondary">
-                    There are no sections for this course.
-                  </Text>
+              <Show roles={[Role.ADMINISTRATOR]}>
+                <Center>
                   <NextLink
                     href={`/courses/${course.data.id}/sections/create`}
                     passHref
@@ -161,6 +143,32 @@ const CoursePage: NextPage = () => {
                       Add
                     </Button>
                   </NextLink>
+                </Center>
+              </Show>
+            </Stack>
+          ) : (
+            <Card paddingY={10} variant="outline">
+              <CardBody>
+                <Stack align="center" spacing={5}>
+                  <Text variant="secondary">
+                    There are no sections for this course.
+                  </Text>
+                  <Show roles={[Role.ADMINISTRATOR]}>
+                    <NextLink
+                      href={`/courses/${course.data.id}/sections/create`}
+                      passHref
+                      legacyBehavior
+                    >
+                      <Button
+                        variant="outline"
+                        as="a"
+                        leftIcon={<AddIcon />}
+                        colorScheme="teal"
+                      >
+                        Add
+                      </Button>
+                    </NextLink>
+                  </Show>
                 </Stack>
               </CardBody>
             </Card>

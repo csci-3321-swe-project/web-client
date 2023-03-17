@@ -1,7 +1,7 @@
 export type Meeting = {
   daysOfWeek: DayOfWeek[];
-  startTime: String;
-  endTime: String;
+  startTime: string;
+  endTime: string;
   location: string;
 };
 

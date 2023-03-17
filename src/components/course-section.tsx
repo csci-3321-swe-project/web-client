@@ -15,10 +15,12 @@ import {
   Wrap,
 } from "@chakra-ui/react";
 import Case from "case";
+import NextLink from "next/link";
 import { FunctionComponent, useState } from "react";
 import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
-import { CourseSection } from "../types";
+import { CourseSection, Role } from "../types";
+import Show from "./show";
 
 export interface CourseSectionProps {
   courseSection: CourseSection;
@@ -46,31 +48,39 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
       setIsDeleting(false);
     }
   };
+
   return (
     <Card key={courseSection.id}>
       <CardBody>
         <Stack spacing={5}>
-          <Wrap justify="end">
-            <Button
-              size="sm"
-              colorScheme="teal"
-              variant="outline"
-              isDisabled={isDeleting}
-              leftIcon={<EditIcon />}
-            >
-              Edit
-            </Button>
-            <Button
-              size="sm"
-              colorScheme="red"
-              variant="outline"
-              leftIcon={<DeleteIcon />}
-              isLoading={isDeleting}
-              onClick={() => deleteCourseSection()}
-            >
-              Delete
-            </Button>
-          </Wrap>
+          <Show roles={[Role.ADMINISTRATOR]}>
+            <Wrap justify="end">
+              <NextLink
+                href={`/courses/${course.data?.id}/sections/${courseSection.id}/edit`}
+              >
+                <Button
+                  as="a"
+                  size="sm"
+                  colorScheme="teal"
+                  variant="outline"
+                  isDisabled={isDeleting}
+                  leftIcon={<EditIcon />}
+                >
+                  Edit
+                </Button>
+              </NextLink>
+              <Button
+                size="sm"
+                colorScheme="red"
+                variant="outline"
+                leftIcon={<DeleteIcon />}
+                isLoading={isDeleting}
+                onClick={() => deleteCourseSection()}
+              >
+                Delete
+              </Button>
+            </Wrap>
+          </Show>
           <Wrap>
             <Stack>
               <Heading fontSize="md">Instructors</Heading>
@@ -99,6 +109,7 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
             </Stack>
           </Wrap>
           <OrderedList listStylePosition="inside" spacing={2}>
+            {/* TODO */}
             <ListItem>
               Alice Worthington &nbsp;
               <Tag size="sm" colorScheme="green">
@@ -117,6 +128,7 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
                 Waitlisted
               </Tag>
             </ListItem>
+            {/* TODO */}
           </OrderedList>
         </Stack>
       </CardBody>
