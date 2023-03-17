@@ -209,19 +209,18 @@ const EditCourseSectionForm: FunctionComponent = () => {
                         name={`meetings.${i}.daysOfWeek`}
                         key={day}
                         render={({ field: { value, ref } }) => {
-                          console.log(value.some((v) => v === day));
                           return (
                             <Checkbox
                               key={day}
                               isChecked={value.some((v) => v === day)}
                               ref={ref}
                               onChange={(e) => {
-                                if (e.target.checked) {
-                                  setValue(`meetings.${i}.daysOfWeek`, [
-                                    day as DayOfWeek,
-                                    ...value,
-                                  ]);
-                                }
+                                setValue(
+                                  `meetings.${i}.daysOfWeek`,
+                                  e.target.checked
+                                    ? [day as DayOfWeek, ...value]
+                                    : value.filter((v) => v !== day)
+                                );
                               }}
                             >
                               {Case.title(day).substring(0, 3)}
