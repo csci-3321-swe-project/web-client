@@ -180,7 +180,7 @@ const CreateCourseSectionForm: FunctionComponent = () => {
                           return (
                             <Checkbox
                               key={day}
-                              value={value.some((v) => v === day).toString()}
+                              isChecked={value.some((v) => v === day)}
                               ref={ref}
                               onChange={(e) => {
                                 if (e.target.checked) {

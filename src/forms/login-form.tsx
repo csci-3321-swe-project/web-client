@@ -1,3 +1,4 @@
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -36,7 +37,7 @@ const LoginForm: FunctionComponent = () => {
   const submitHandler: SubmitHandler<Values> = async (data) => {
     try {
       const res = await client.post("/tokens", data);
-      login(res.data);
+      await login(res.data);
     } catch (e) {
       if (e instanceof AxiosError) {
         toast({
@@ -63,6 +64,7 @@ const LoginForm: FunctionComponent = () => {
           alignSelf="end"
           colorScheme="teal"
           type="submit"
+          rightIcon={<ArrowForwardIcon />}
         >
           Login
         </Button>

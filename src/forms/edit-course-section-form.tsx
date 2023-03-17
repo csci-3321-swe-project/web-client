@@ -208,11 +208,12 @@ const EditCourseSectionForm: FunctionComponent = () => {
                         control={control}
                         name={`meetings.${i}.daysOfWeek`}
                         key={day}
-                        render={({ field: { onChange, value, ref } }) => {
+                        render={({ field: { value, ref } }) => {
+                          console.log(value.some((v) => v === day));
                           return (
                             <Checkbox
                               key={day}
-                              value={value.some((v) => v === day).toString()}
+                              isChecked={value.some((v) => v === day)}
                               ref={ref}
                               onChange={(e) => {
                                 if (e.target.checked) {

@@ -17,7 +17,7 @@ const EditCourseSectionPage: NextPage = () => {
   const course = useCurrentCourse();
 
   return (
-    <Container marginTop={10}>
+    <Container maxWidth="container.sm" marginTop={10}>
       <Card>
         <CardHeader>
           <Stack spacing={5}>
