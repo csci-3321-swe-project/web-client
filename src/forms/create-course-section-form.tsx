@@ -78,6 +78,7 @@ const CreateCourseSectionForm: FunctionComponent = () => {
         `/courses/${course.data?.id}/sections`,
         data
       );
+      await course.mutate();
       await router.push(`/courses/${course.data?.id}`);
       toast({ status: "success", title: "Course Section Created" });
     } catch (e) {
@@ -224,6 +225,7 @@ const CreateCourseSectionForm: FunctionComponent = () => {
                     onClick={() => meetings.append(defaultMeeting)}
                     variant="outline"
                     leftIcon={<AddIcon />}
+                    colorScheme="teal"
                   >
                     Add
                   </Button>

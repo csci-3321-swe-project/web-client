@@ -57,6 +57,7 @@ const EditCourseForm: FunctionComponent = () => {
 
     try {
       await client.put<Course>(`/courses/${course.data.id}`, data);
+      await course.mutate();
       await router.push(`/courses/${course.data.id}`);
       toast({ status: "success", title: "Course Updated" });
     } catch (e) {

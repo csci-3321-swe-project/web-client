@@ -1,10 +1,4 @@
-import {
-  AddIcon,
-  ArrowBackIcon,
-  DeleteIcon,
-  EditIcon,
-  TimeIcon,
-} from "@chakra-ui/icons";
+import { AddIcon, ArrowBackIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Alert,
   Badge,
@@ -16,22 +10,18 @@ import {
   Flex,
   Heading,
   HStack,
-  ListItem,
-  OrderedList,
   Spacer,
   Spinner,
   Stack,
-  Tag,
-  TagLeftIcon,
   Text,
   useToast,
-  Wrap,
 } from "@chakra-ui/react";
 import Case from "case";
 import { NextPage } from "next";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import CourseSection from "../../../components/course-section";
 import useClient from "../../../hooks/use-client";
 import useCurrentCourse from "../../../hooks/use-current-course";
 
@@ -127,84 +117,12 @@ const CoursePage: NextPage = () => {
           <Heading fontSize="3xl">Sections</Heading>
           {course.data.courseSections.length ? (
             <Stack spacing={5}>
-              {course.data.courseSections.map(
-                ({ id, instructors, meetings }) => (
-                  <Card key={id}>
-                    <CardBody>
-                      <Stack spacing={5}>
-                        <Wrap justify="end">
-                          <Button
-                            size="sm"
-                            colorScheme="teal"
-                            variant="outline"
-                            leftIcon={<EditIcon />}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            size="sm"
-                            colorScheme="red"
-                            variant="outline"
-                            isLoading={isDeleting}
-                            leftIcon={<DeleteIcon />}
-                          >
-                            Delete
-                          </Button>
-                        </Wrap>
-                        <Wrap>
-                          <Stack>
-                            <Heading fontSize="md">Instructors</Heading>
-                            <Text flex={1} textAlign="left">
-                              {instructors
-                                .map(
-                                  (instructor) =>
-                                    `${instructor.firstName} ${instructor.lastName}`
-                                )
-                                .join(", ")}
-                            </Text>
-                          </Stack>
-                          <Spacer />
-                          <Stack>
-                            <Heading textAlign="right" fontSize="md">
-                              Meetings
-                            </Heading>
-                            {meetings.map((meeting, i) => (
-                              <Tag key={i}>
-                                <TagLeftIcon as={TimeIcon} />
-                                {`${meeting.startTime}-${
-                                  meeting.endTime
-                                } ${meeting.daysOfWeek
-                                  .map((day) => Case.title(day).substring(0, 3))
-                                  .join(" ")}, ${meeting.location}`}
-                              </Tag>
-                            ))}
-                          </Stack>
-                        </Wrap>
-                        <OrderedList listStylePosition="inside" spacing={2}>
-                          <ListItem>
-                            Alice Worthington &nbsp;
-                            <Tag size="sm" colorScheme="green">
-                              Registered
-                            </Tag>
-                          </ListItem>
-                          <ListItem>
-                            Bob Sue &nbsp;
-                            <Tag size="sm" colorScheme="green">
-                              Registered
-                            </Tag>
-                          </ListItem>
-                          <ListItem>
-                            John Doe &nbsp;
-                            <Tag size="sm" colorScheme="yellow">
-                              Waitlisted
-                            </Tag>
-                          </ListItem>
-                        </OrderedList>
-                      </Stack>
-                    </CardBody>
-                  </Card>
-                )
-              )}
+              {course.data.courseSections.map((courseSection) => (
+                <CourseSection
+                  key={courseSection.id}
+                  courseSection={courseSection}
+                />
+              ))}
               <Center>
                 <NextLink
                   href={`/courses/${course.data.id}/sections/create`}
