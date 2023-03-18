@@ -183,12 +183,13 @@ const CreateCourseSectionForm: FunctionComponent = () => {
                               isChecked={value.some((v) => v === day)}
                               ref={ref}
                               onChange={(e) => {
-                                if (e.target.checked) {
-                                  setValue(`meetings.${i}.daysOfWeek`, [
-                                    day as DayOfWeek,
-                                    ...value,
-                                  ]);
-                                }
+                                console.log(e.target);
+                                setValue(
+                                  `meetings.${i}.daysOfWeek`,
+                                  e.target.checked
+                                    ? [day as DayOfWeek, ...value]
+                                    : value.filter((v) => v !== day)
+                                );
                               }}
                             >
                               {Case.title(day).substring(0, 3)}
