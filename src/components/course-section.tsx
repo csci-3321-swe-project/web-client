@@ -24,11 +24,12 @@ import {
 import Case from "case";
 import NextLink from "next/link";
 import { FunctionComponent, useState } from "react";
+import { mutate } from "swr";
 import useAccount from "../hooks/use-account";
 import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
 import useRegistrations from "../hooks/use-registrations";
-import { CourseSection, Role } from "../types";
+import { CourseSection, Registration, Role } from "../types";
 import Show from "./show";
 
 export interface CourseSectionProps {
@@ -52,10 +53,13 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
   const registerCourseSection = async () => {
     try {
       setIsRegistering(true);
-      await client.post(
+      const newRegistration = await client.post<Registration>(
         `/courses/${course.data?.id}/sections/${courseSection.id}/registrations`
       );
-      await registrations.mutate();
+      await registrations.mutate([
+        ...(registrations.data || []),
+        newRegistration.data,
+      ]);
       toast({ status: "success", title: "Registered for Course Section" });
     } catch (err) {
       toast({ status: "error", title: "Error Registering for Course Section" });
@@ -70,7 +74,10 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
       await client.delete(
         `/courses/${course.data?.id}/sections/${courseSection.id}/registrations`
       );
-      await registrations.mutate();
+      await registrations.mutate([
+        ...(registrations.data?.filter((r) => r.userId !== account.data?.id) ||
+          []),
+      ]);
       toast({ status: "success", title: "Unregistered for Course Section" });
     } catch (err) {
       toast({
@@ -83,12 +90,25 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
   };
 
   const deleteCourseSection = async () => {
+    if (!course.data) {
+      return;
+    }
+
     try {
       setIsDeleting(true);
       await client.delete(
-        `/courses/${course.data?.id}/sections/${courseSection.id}`
+        `/courses/${course.data.id}/sections/${courseSection.id}`
       );
-      await course.mutate();
+      await course.mutate({
+        ...course.data,
+        courseSections: course.data.courseSections.filter(
+          (cs) => cs.id !== courseSection.id
+        ),
+      });
+      await mutate(
+        `/courses/${course.data.id}/sections/${courseSection.id}`,
+        undefined
+      );
       toast({ status: "success", title: "Course Section Deleted" });
     } catch (err) {
       toast({ status: "error", title: "Error Deleting Course Section" });

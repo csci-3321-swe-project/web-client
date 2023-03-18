@@ -1,6 +1,7 @@
 import { useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { mutate } from "swr";
 import useToken from "./use-token";
 
 const useAuth = () => {
@@ -19,8 +20,9 @@ const useAuth = () => {
 
   const logout = async () => {
     setIsLoading(true);
-    await router.push("/login");
+    mutate(() => true, undefined, { revalidate: false });
     setToken(null);
+    await router.push("/login");
     toast({ status: "success", title: "Logout Success" });
     setIsLoading(false);
   };

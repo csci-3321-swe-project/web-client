@@ -78,12 +78,24 @@ const EditCourseSectionForm: FunctionComponent = () => {
   };
 
   const submitHandler: SubmitHandler<Values> = async (data) => {
+    if (!course.data || !courseSection.data) {
+      return;
+    }
+
     try {
-      await client.put<CourseSection>(
-        `/courses/${course.data?.id}/sections/${courseSection.data?.id}`,
+      const updatedCourseSection = await client.put<CourseSection>(
+        `/courses/${course.data.id}/sections/${courseSection.data.id}`,
         data
       );
-      await course.mutate();
+      await course.mutate({
+        ...course.data,
+        courseSections: [
+          ...course.data.courseSections.filter(
+            (cs) => cs.id !== updatedCourseSection.data.id
+          ),
+          updatedCourseSection.data,
+        ],
+      });
       await router.push(`/courses/${course.data?.id}`);
       toast({ status: "success", title: "Course Section Updated" });
     } catch (e) {
