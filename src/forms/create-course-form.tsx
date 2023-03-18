@@ -1,13 +1,16 @@
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Center,
   FormControl,
   FormErrorMessage,
   FormLabel,
   HStack,
   Input,
   Select,
+  Spinner,
   Stack,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -16,6 +19,7 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { mutate } from "swr";
 import { z } from "zod";
 import useClient from "../hooks/use-client";
 import useOptions from "../hooks/use-options";
@@ -48,6 +52,7 @@ const CreateCourseForm: FunctionComponent = () => {
   const submitHandler: SubmitHandler<Values> = async (data) => {
     try {
       const newCourse = await client.post<Course>("/courses", data);
+      await mutate(`/courses/${newCourse.data.id}`, newCourse);
       await router.push(`/courses/${newCourse.data.id}`);
       toast({ status: "success", title: "Course Created" });
     } catch (e) {
@@ -63,6 +68,17 @@ const CreateCourseForm: FunctionComponent = () => {
     }
   };
 
+  if (options.isLoading || !options.data) {
+    return (
+      <Center paddingY={10}>
+        <Stack align="center" spacing={5}>
+          <Text variant="secondary">Loading...</Text>
+          <Spinner />
+        </Stack>
+      </Center>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <Stack spacing={5}>
@@ -73,7 +89,7 @@ const CreateCourseForm: FunctionComponent = () => {
             disabled={options.isLoading}
             {...register("term")}
           >
-            {options.data?.terms.map(({ name, value }) => (
+            {options.data.terms.map(({ name, value }) => (
               <option key={value} value={value}>
                 {name}
               </option>
@@ -89,7 +105,7 @@ const CreateCourseForm: FunctionComponent = () => {
               disabled={options.isLoading}
               {...register("department")}
             >
-              {options.data?.departments.map(({ name, value }) => (
+              {options.data.departments.map(({ name, value }) => (
                 <option key={value} value={value}>
                   {name}
                 </option>

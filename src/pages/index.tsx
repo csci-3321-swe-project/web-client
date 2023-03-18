@@ -5,7 +5,6 @@ import {
   Button,
   Center,
   Container,
-  Flex,
   Heading,
   HStack,
   Input,
@@ -13,6 +12,7 @@ import {
   Spinner,
   Stack,
   Text,
+  Wrap,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import NextLink from "next/link";
@@ -32,7 +32,7 @@ const Home: NextPage = () => {
             <Spinner />
           </Center>
         ) : (
-          <Flex align="center">
+          <Wrap spacing={5} align="center">
             <Stack>
               <HStack>
                 <Badge colorScheme="teal">{account.data.role}</Badge>
@@ -51,7 +51,7 @@ const Home: NextPage = () => {
                 </Button>
               </NextLink>
             </Show>
-          </Flex>
+          </Wrap>
         )}
       </Container>
       <Container paddingY={10}>

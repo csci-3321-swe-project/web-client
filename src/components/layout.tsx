@@ -1,3 +1,4 @@
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -31,7 +32,12 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
         </NextLink>
         <Spacer />
         {isAuthenticated ? (
-          <Button isLoading={isLoading} onClick={handleLogout}>
+          <Button
+            colorScheme="teal"
+            rightIcon={<ArrowForwardIcon />}
+            isLoading={isLoading}
+            onClick={handleLogout}
+          >
             Logout
           </Button>
         ) : null}

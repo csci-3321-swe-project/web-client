@@ -58,8 +58,11 @@ const EditCourseForm: FunctionComponent = () => {
     }
 
     try {
-      await client.put<Course>(`/courses/${course.data.id}`, data);
-      await course.mutate();
+      const updatedCourse = await client.put<Course>(
+        `/courses/${course.data.id}`,
+        data
+      );
+      await course.mutate(updatedCourse.data);
       await router.push(`/courses/${course.data.id}`);
       toast({ status: "success", title: "Course Updated" });
     } catch (e) {
@@ -100,7 +103,7 @@ const EditCourseForm: FunctionComponent = () => {
         >
           <FormLabel>Term</FormLabel>
           <Select placeholder="Select Term" {...register("term")}>
-            {options.data?.terms.map(({ name, value }) => (
+            {options.data.terms.map(({ name, value }) => (
               <option key={value} value={value}>
                 {name}
               </option>
@@ -116,7 +119,7 @@ const EditCourseForm: FunctionComponent = () => {
           >
             <FormLabel>Department</FormLabel>
             <Select placeholder="Select Department" {...register("department")}>
-              {options.data?.departments.map(({ name, value }) => (
+              {options.data.departments.map(({ name, value }) => (
                 <option key={value} value={value}>
                   {name}
                 </option>

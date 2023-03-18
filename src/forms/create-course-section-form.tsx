@@ -11,6 +11,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  Spinner,
   Stack,
   Text,
   useToast,
@@ -27,6 +28,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
+import { mutate } from "swr";
 import { z } from "zod";
 import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
@@ -73,12 +75,23 @@ const CreateCourseSectionForm: FunctionComponent = () => {
   };
 
   const submitHandler: SubmitHandler<Values> = async (data) => {
+    if (course.isLoading || !course.data) {
+      return;
+    }
+
     try {
-      await client.post<CourseSection>(
-        `/courses/${course.data?.id}/sections`,
+      const newCourseSection = await client.post<CourseSection>(
+        `/courses/${course.data.id}/sections`,
         data
       );
-      await course.mutate();
+      await mutate(
+        `/${course.data.id}/sections/${newCourseSection.data.id}`,
+        newCourseSection
+      );
+      await course.mutate({
+        ...course.data,
+        courseSections: [...course.data.courseSections, newCourseSection.data],
+      });
       await router.push(`/courses/${course.data?.id}`);
       toast({ status: "success", title: "Course Section Created" });
     } catch (e) {
@@ -103,6 +116,17 @@ const CreateCourseSectionForm: FunctionComponent = () => {
 
     setValue("instructorIds", newInstructorIds);
   }, [instructorUsers, setValue]);
+
+  if (course.isLoading || !course.data) {
+    return (
+      <Center paddingY={10}>
+        <Stack align="center" spacing={5}>
+          <Text variant="secondary">Loading...</Text>
+          <Spinner />
+        </Stack>
+      </Center>
+    );
+  }
 
   return (
     <Stack spacing={5}>

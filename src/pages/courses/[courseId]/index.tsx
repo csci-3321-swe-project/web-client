@@ -7,7 +7,6 @@ import {
   CardBody,
   Center,
   Container,
-  Flex,
   Heading,
   HStack,
   Spacer,
@@ -15,6 +14,7 @@ import {
   Stack,
   Text,
   useToast,
+  Wrap,
 } from "@chakra-ui/react";
 import Case from "case";
 import { NextPage } from "next";
@@ -38,6 +38,7 @@ const CoursePage: NextPage = () => {
     try {
       setIsDeleting(true);
       await client.delete(`/courses/${course.data?.id}`);
+      await course.mutate(undefined);
       await router.push("/");
       toast({ status: "success", title: "Course Deleted" });
     } catch (err) {
@@ -82,7 +83,7 @@ const CoursePage: NextPage = () => {
               Search Courses
             </Button>
           </NextLink>
-          <Flex gap={5} align="center">
+          <Wrap spacing={5} align="center">
             <Stack>
               <HStack>
                 <Badge>{Case.title(course.data.department)}</Badge>
@@ -111,7 +112,7 @@ const CoursePage: NextPage = () => {
                 Delete
               </Button>
             </Show>
-          </Flex>
+          </Wrap>
         </Stack>
       </Container>
       <Container maxWidth="container.sm" paddingY={10}>

@@ -44,7 +44,6 @@ const PeoplePickerForm: FunctionComponent<PeoplePickerFormProps> = ({
     register,
     handleSubmit,
     reset,
-    control,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
     resolver: zodResolver(schema),
