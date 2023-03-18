@@ -1,12 +1,16 @@
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Center,
   FormControl,
   FormErrorMessage,
   FormLabel,
   HStack,
   Input,
   Select,
+  Spinner,
   Stack,
+  Text,
   useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -58,6 +62,17 @@ const RegisterForm: FunctionComponent = () => {
     }
   };
 
+  if (options.isLoading || !options.data) {
+    return (
+      <Center paddingY={10}>
+        <Stack align="center" spacing={5}>
+          <Text variant="secondary">Loading...</Text>
+          <Spinner />
+        </Stack>
+      </Center>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <Stack>
@@ -92,8 +107,9 @@ const RegisterForm: FunctionComponent = () => {
         <Button
           isLoading={isSubmitting}
           alignSelf="end"
-          colorScheme="blue"
+          colorScheme="teal"
           type="submit"
+          rightIcon={<ArrowForwardIcon />}
         >
           Register
         </Button>

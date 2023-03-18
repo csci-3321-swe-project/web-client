@@ -1,3 +1,4 @@
+import { AddIcon } from "@chakra-ui/icons";
 import {
   Badge,
   Box,
@@ -18,6 +19,7 @@ import NextLink from "next/link";
 import Show from "../components/show";
 import useAccount from "../hooks/use-account";
 import useAuthRedirect from "../hooks/use-auth-redirect";
+import { Role } from "../types";
 
 const Home: NextPage = () => {
   const account = useAccount();
@@ -33,7 +35,7 @@ const Home: NextPage = () => {
           <Flex align="center">
             <Stack>
               <HStack>
-                <Badge colorScheme="blue">{account.data.role}</Badge>
+                <Badge colorScheme="teal">{account.data.role}</Badge>
                 {account.data.isMock && (
                   <Badge colorScheme="purple">Mock Account</Badge>
                 )}
@@ -42,9 +44,9 @@ const Home: NextPage = () => {
               <Text>{account.data.email}</Text>
             </Stack>
             <Spacer />
-            <Show roles={["ADMINISTRATOR"]}>
+            <Show roles={[Role.ADMINISTRATOR]}>
               <NextLink href="/courses/create" passHref legacyBehavior>
-                <Button as="a" colorScheme="blue">
+                <Button as="a" colorScheme="teal" leftIcon={<AddIcon />}>
                   New Course
                 </Button>
               </NextLink>

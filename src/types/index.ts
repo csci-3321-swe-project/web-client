@@ -1,7 +1,7 @@
 export type Meeting = {
   daysOfWeek: DayOfWeek[];
-  startTime: String;
-  endTime: String;
+  startTime: string;
+  endTime: string;
   location: string;
 };
 
@@ -34,7 +34,8 @@ export type CourseSection = {
   id: string;
   courseId: string;
   meetings: Meeting[];
-  instructorId: string;
+  instructorIds: string[];
+  instructors: User[];
 };
 
 export enum DayOfWeek {

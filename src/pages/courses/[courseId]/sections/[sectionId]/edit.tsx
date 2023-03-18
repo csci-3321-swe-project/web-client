@@ -10,14 +10,14 @@ import {
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import NextLink from "next/link";
-import EditCourseForm from "../../../forms/edit-course-form";
-import useCurrentCourse from "../../../hooks/use-current-course";
+import EditCourseSectionForm from "../../../../../forms/edit-course-section-form";
+import useCurrentCourse from "../../../../../hooks/use-current-course";
 
-const EditCoursePage: NextPage = () => {
+const EditCourseSectionPage: NextPage = () => {
   const course = useCurrentCourse();
 
   return (
-    <Container marginTop={10}>
+    <Container maxWidth="container.sm" marginTop={10}>
       <Card>
         <CardHeader>
           <Stack spacing={5}>
@@ -39,11 +39,11 @@ const EditCoursePage: NextPage = () => {
           </Stack>
         </CardHeader>
         <CardBody>
-          <EditCourseForm />
+          <EditCourseSectionForm />
         </CardBody>
       </Card>
     </Container>
   );
 };
 
-export default EditCoursePage;
+export default EditCourseSectionPage;

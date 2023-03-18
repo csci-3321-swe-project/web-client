@@ -1,12 +1,16 @@
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Center,
   FormControl,
   FormErrorMessage,
   FormLabel,
   HStack,
   Input,
   Select,
+  Spinner,
   Stack,
+  Text,
   Textarea,
   useToast,
 } from "@chakra-ui/react";
@@ -20,6 +24,7 @@ import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
 import useOptions from "../hooks/use-options";
 import { Course } from "../types";
+import { placeholders } from "../utilities/constants";
 
 const schema = z.object({
   name: z.string(),
@@ -41,7 +46,6 @@ const EditCourseForm: FunctionComponent = () => {
     reset,
     register,
     handleSubmit,
-    control,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
     resolver: zodResolver(schema),
@@ -55,6 +59,7 @@ const EditCourseForm: FunctionComponent = () => {
 
     try {
       await client.put<Course>(`/courses/${course.data.id}`, data);
+      await course.mutate();
       await router.push(`/courses/${course.data.id}`);
       toast({ status: "success", title: "Course Updated" });
     } catch (e) {
@@ -74,9 +79,20 @@ const EditCourseForm: FunctionComponent = () => {
     reset(course.data);
   }, [course.data, reset]);
 
+  if (course.isLoading || !course.data || options.isLoading || !options.data) {
+    return (
+      <Center paddingY={10}>
+        <Stack align="center" spacing={5}>
+          <Text variant="secondary">Loading...</Text>
+          <Spinner />
+        </Stack>
+      </Center>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <Stack>
+      <Stack spacing={5}>
         <FormControl
           isDisabled={options.isLoading || course.isLoading}
           isInvalid={errors.term !== undefined}
@@ -114,7 +130,11 @@ const EditCourseForm: FunctionComponent = () => {
             isRequired
           >
             <FormLabel>Code</FormLabel>
-            <Input type="number" {...register("code")} />
+            <Input
+              placeholder={placeholders.code}
+              type="number"
+              {...register("code")}
+            />
             <FormErrorMessage>{errors.code?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
@@ -124,7 +144,11 @@ const EditCourseForm: FunctionComponent = () => {
           isRequired
         >
           <FormLabel>Name</FormLabel>
-          <Input type="text" {...register("name")} />
+          <Input
+            placeholder={placeholders.courseName}
+            type="text"
+            {...register("name")}
+          />
           <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
         </FormControl>
         <FormControl
@@ -133,17 +157,21 @@ const EditCourseForm: FunctionComponent = () => {
           isRequired
         >
           <FormLabel>Description</FormLabel>
-          <Textarea {...register("description")} />
+          <Textarea
+            placeholder={placeholders.description}
+            {...register("description")}
+          />
           <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
         </FormControl>
         <Button
           isDisabled={course.isLoading}
           isLoading={isSubmitting}
           alignSelf="end"
-          colorScheme="blue"
+          colorScheme="teal"
           type="submit"
+          rightIcon={<ArrowForwardIcon />}
         >
-          Update Course
+          Update
         </Button>
       </Stack>
     </form>

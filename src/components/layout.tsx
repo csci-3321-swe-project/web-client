@@ -15,7 +15,7 @@ import useAuth from "../hooks/use-auth";
 
 const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
   const toast = useToast();
-  const { logout, isAuthenticated } = useAuth();
+  const { logout, isAuthenticated, isLoading } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -31,7 +31,9 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
         </NextLink>
         <Spacer />
         {isAuthenticated ? (
-          <Button onClick={handleLogout}>Logout</Button>
+          <Button isLoading={isLoading} onClick={handleLogout}>
+            Logout
+          </Button>
         ) : null}
       </Flex>
       <Box>{children}</Box>

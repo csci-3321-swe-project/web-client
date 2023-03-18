@@ -1,3 +1,4 @@
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -19,6 +20,7 @@ import { z } from "zod";
 import useClient from "../hooks/use-client";
 import useOptions from "../hooks/use-options";
 import { Course } from "../types";
+import { placeholders } from "../utilities/constants";
 
 const schema = z.object({
   name: z.string(),
@@ -63,7 +65,7 @@ const CreateCourseForm: FunctionComponent = () => {
 
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
-      <Stack>
+      <Stack spacing={5}>
         <FormControl isInvalid={errors.term !== undefined} isRequired>
           <FormLabel>Term</FormLabel>
           <Select
@@ -97,25 +99,37 @@ const CreateCourseForm: FunctionComponent = () => {
           </FormControl>
           <FormControl isInvalid={errors.code !== undefined} isRequired>
             <FormLabel>Code</FormLabel>
-            <Input type="number" {...register("code")} />
+            <Input
+              placeholder={placeholders.code}
+              type="number"
+              {...register("code")}
+            />
             <FormErrorMessage>{errors.code?.message}</FormErrorMessage>
           </FormControl>
         </HStack>
         <FormControl isInvalid={errors.name !== undefined} isRequired>
           <FormLabel>Name</FormLabel>
-          <Input type="text" {...register("name")} />
+          <Input
+            placeholder={placeholders.courseName}
+            type="text"
+            {...register("name")}
+          />
           <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={errors.description !== undefined} isRequired>
           <FormLabel>Description</FormLabel>
-          <Textarea {...register("description")} />
+          <Textarea
+            placeholder={placeholders.description}
+            {...register("description")}
+          />
           <FormErrorMessage>{errors.description?.message}</FormErrorMessage>
         </FormControl>
         <Button
           isLoading={isSubmitting}
           alignSelf="end"
-          colorScheme="blue"
+          colorScheme="teal"
           type="submit"
+          rightIcon={<ArrowForwardIcon />}
         >
           Create Course
         </Button>

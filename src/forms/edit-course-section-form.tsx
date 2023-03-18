@@ -11,6 +11,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  Spinner,
   Stack,
   Text,
   useToast,
@@ -20,7 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import Case from "case";
 import { useRouter } from "next/router";
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useMemo, useState } from "react";
 import {
   Controller,
   SubmitHandler,
@@ -30,6 +31,7 @@ import {
 import { z } from "zod";
 import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
+import useCurrentCourseSection from "../hooks/use-current-course-section";
 import { CourseSection, DayOfWeek, User } from "../types";
 import PeoplePickerForm from "./people-picker-form";
 
@@ -49,8 +51,9 @@ const schema = z.object({
 
 type Values = z.infer<typeof schema>;
 
-const CreateCourseSectionForm: FunctionComponent = () => {
+const EditCourseSectionForm: FunctionComponent = () => {
   const course = useCurrentCourse();
+  const courseSection = useCurrentCourseSection();
   const client = useClient();
   const router = useRouter();
   const toast = useToast();
@@ -59,10 +62,12 @@ const CreateCourseSectionForm: FunctionComponent = () => {
     register,
     handleSubmit,
     setValue,
+    reset,
     control,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
     resolver: zodResolver(schema),
+    defaultValues: useMemo(() => courseSection.data, [courseSection.data]),
   });
   const meetings = useFieldArray({ name: "meetings", control });
   const defaultMeeting = {
@@ -74,13 +79,13 @@ const CreateCourseSectionForm: FunctionComponent = () => {
 
   const submitHandler: SubmitHandler<Values> = async (data) => {
     try {
-      await client.post<CourseSection>(
-        `/courses/${course.data?.id}/sections`,
+      await client.put<CourseSection>(
+        `/courses/${course.data?.id}/sections/${courseSection.data?.id}`,
         data
       );
       await course.mutate();
       await router.push(`/courses/${course.data?.id}`);
-      toast({ status: "success", title: "Course Section Created" });
+      toast({ status: "success", title: "Course Section Updated" });
     } catch (e) {
       if (e instanceof AxiosError) {
         toast({
@@ -103,6 +108,33 @@ const CreateCourseSectionForm: FunctionComponent = () => {
 
     setValue("instructorIds", newInstructorIds);
   }, [instructorUsers, setValue]);
+
+  useEffect(() => {
+    if (!courseSection.data) {
+      return;
+    }
+
+    console.log(courseSection.data);
+
+    reset(courseSection.data);
+    setInstructorUsers(courseSection.data.instructors);
+  }, [courseSection.data, reset]);
+
+  if (
+    course.isLoading ||
+    !course.data ||
+    courseSection.isLoading ||
+    !courseSection.data
+  ) {
+    return (
+      <Center paddingY={10}>
+        <Stack align="center" spacing={5}>
+          <Text variant="secondary">Loading...</Text>
+          <Spinner />
+        </Stack>
+      </Center>
+    );
+  }
 
   return (
     <Stack spacing={5}>
@@ -176,7 +208,8 @@ const CreateCourseSectionForm: FunctionComponent = () => {
                         control={control}
                         name={`meetings.${i}.daysOfWeek`}
                         key={day}
-                        render={({ field: { onChange, value, ref } }) => {
+                        render={({ field: { value, ref } }) => {
+                          console.log(value.some((v) => v === day));
                           return (
                             <Checkbox
                               key={day}
@@ -241,7 +274,7 @@ const CreateCourseSectionForm: FunctionComponent = () => {
             type="submit"
             rightIcon={<ArrowForwardIcon />}
           >
-            Create
+            Update
           </Button>
         </Stack>
       </form>
@@ -249,4 +282,4 @@ const CreateCourseSectionForm: FunctionComponent = () => {
   );
 };
 
-export default CreateCourseSectionForm;
+export default EditCourseSectionForm;

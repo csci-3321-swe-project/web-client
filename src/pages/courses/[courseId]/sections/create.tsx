@@ -32,7 +32,7 @@ const CreateCourseSectionPage: NextPage = () => {
                 variant="link"
                 leftIcon={<ArrowBackIcon />}
               >
-                Course Details
+                {course.data?.name}
               </Button>
             </NextLink>
             <Heading>Create Course Section</Heading>
