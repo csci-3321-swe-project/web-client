@@ -35,7 +35,7 @@ const EditCourseSectionPage: NextPage = () => {
                 {course.data?.name}
               </Button>
             </NextLink>
-            <Heading>Edit Course</Heading>
+            <Heading>Edit Course Section</Heading>
           </Stack>
         </CardHeader>
         <CardBody>
