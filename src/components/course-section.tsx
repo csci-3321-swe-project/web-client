@@ -148,6 +148,8 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
             <Show roles={[Role.ADMINISTRATOR]}>
               <NextLink
                 href={`/courses/${course.data?.id}/sections/${courseSection.id}/edit`}
+                passHref
+                legacyBehavior
               >
                 <Button
                   as="a"
