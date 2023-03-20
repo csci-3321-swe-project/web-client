@@ -18,10 +18,6 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
   const toast = useToast();
   const { logout, isAuthenticated, isLoading } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-  };
-
   return (
     <Stack>
       <Flex direction="row" align="center" padding={5} width="100%" shadow="md">
@@ -36,7 +32,7 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
             colorScheme="teal"
             rightIcon={<ArrowForwardIcon />}
             isLoading={isLoading}
-            onClick={handleLogout}
+            onClick={() => logout()}
           >
             Logout
           </Button>

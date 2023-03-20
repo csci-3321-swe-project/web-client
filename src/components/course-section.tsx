@@ -99,16 +99,21 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
       await client.delete(
         `/courses/${course.data.id}/sections/${courseSection.id}`
       );
+
+      // Remove course section
+      await mutate(
+        `/courses/${course.data.id}/sections/${courseSection.id}`,
+        undefined
+      );
+
+      // Remove course section from course
       await course.mutate({
         ...course.data,
         courseSections: course.data.courseSections.filter(
           (cs) => cs.id !== courseSection.id
         ),
       });
-      await mutate(
-        `/courses/${course.data.id}/sections/${courseSection.id}`,
-        undefined
-      );
+
       toast({ status: "success", title: "Course Section Deleted" });
     } catch (err) {
       toast({ status: "error", title: "Error Deleting Course Section" });
