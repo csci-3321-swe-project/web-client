@@ -20,9 +20,9 @@ const useAuth = () => {
 
   const logout = async () => {
     setIsLoading(true);
-    mutate(() => true, undefined, { revalidate: false });
-    setToken(null);
     await router.push("/login");
+    setToken(null);
+    await mutate(() => true, undefined, { revalidate: false });
     toast({ status: "success", title: "Logout Success" });
     setIsLoading(false);
   };

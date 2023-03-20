@@ -38,8 +38,8 @@ const CoursePage: NextPage = () => {
     try {
       setIsDeleting(true);
       await client.delete(`/courses/${course.data?.id}`);
-      await course.mutate(undefined);
       await router.push("/");
+      await course.mutate(undefined);
       toast({ status: "success", title: "Course Deleted" });
     } catch (err) {
       toast({ status: "error", title: "Error Deleting Course" });
