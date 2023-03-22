@@ -2,12 +2,13 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Node.js CI
+run-name: ${{github.actor}} pushed to testing
 
 on:
   push:
     branches: [ "testing" ]
-  pull_request:
-    branches: [ "testing" ]
+  # pull_request:
+  #   branches: [ "testing" ]
 
 jobs:
   build:
