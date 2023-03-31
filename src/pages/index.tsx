@@ -1,13 +1,11 @@
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Badge,
-  Box,
   Button,
   Center,
   Container,
   Heading,
   HStack,
-  Input,
   Spacer,
   Spinner,
   Stack,
@@ -17,6 +15,7 @@ import {
 import type { NextPage } from "next";
 import NextLink from "next/link";
 import Show from "../components/show";
+import SearchForm from "../forms/search-form";
 import useAccount from "../hooks/use-account";
 import useAuthRedirect from "../hooks/use-auth-redirect";
 import { Role } from "../types";
@@ -54,16 +53,8 @@ const Home: NextPage = () => {
           </Wrap>
         )}
       </Container>
-      <Container paddingY={10}>
-        <Stack>
-          <HStack>
-            <Input isDisabled />
-            <Button isDisabled>Search</Button>
-          </HStack>
-          <Box backgroundColor="gray.200" height={50} />
-          <Box backgroundColor="gray.100" height={50} />
-          <Box backgroundColor="gray.50" height={50} />
-        </Stack>
+      <Container maxWidth="container.md" paddingY={10}>
+        <SearchForm />
       </Container>
     </>
   );
