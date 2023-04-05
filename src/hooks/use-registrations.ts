@@ -4,6 +4,13 @@ import { Registration } from "../types";
 import useAuth from "./use-auth";
 import useClient from "./use-client";
 
+/**
+ * Fetches the registrations for a section.
+ * @param courseId - The course id.
+ * @param sectionId - The section id.
+ * @returns The registrations for a section.
+ * @example const { data: registrations, error } = useRegistrations(courseId, sectionId);
+ */
 const useRegistrations = (courseId?: string, sectionId?: string) => {
   const client = useClient();
   const { isAuthenticated } = useAuth();

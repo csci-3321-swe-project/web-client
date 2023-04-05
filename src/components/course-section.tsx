@@ -18,8 +18,8 @@ import {
   Tag,
   TagLeftIcon,
   Text,
-  useToast,
   Wrap,
+  useToast,
 } from "@chakra-ui/react";
 import Case from "case";
 import NextLink from "next/link";

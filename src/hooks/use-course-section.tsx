@@ -4,6 +4,12 @@ import { CourseSection } from "../types";
 import useAuth from "./use-auth";
 import useClient from "./use-client";
 
+/**
+ * Fetches a course section by id
+ * @param courseId - The course id
+ * @param sectionId - The section id
+ * @returns - The course section
+ */
 const useCourseSection = (courseId?: string, sectionId?: string) => {
   const client = useClient();
   const { isAuthenticated } = useAuth();
