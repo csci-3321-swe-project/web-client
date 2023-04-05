@@ -1,6 +1,5 @@
 import { AddIcon, ArrowBackIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
-  Alert,
   Badge,
   Button,
   Card,
@@ -47,16 +46,6 @@ const CoursePage: NextPage = () => {
       setIsDeleting(false);
     }
   };
-
-  if (course.error !== undefined) {
-    return (
-      <Container>
-        <Center paddingY={10}>
-          <Alert status="error">{course.error.message}</Alert>
-        </Center>
-      </Container>
-    );
-  }
 
   if (course.isLoading || !course.data) {
     return (
@@ -123,10 +112,7 @@ const CoursePage: NextPage = () => {
           {course.data.courseSections.length ? (
             <Stack spacing={5}>
               {course.data.courseSections.map((courseSection) => (
-                <CourseSection
-                  key={courseSection.id}
-                  courseSection={courseSection}
-                />
+                <CourseSection key={courseSection.id} id={courseSection.id} />
               ))}
               <Show roles={[Role.ADMINISTRATOR]}>
                 <Center>

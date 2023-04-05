@@ -9,127 +9,39 @@ import {
   Button,
   Card,
   CardBody,
-  Center,
   Heading,
+  Skeleton,
   Spacer,
-  Spinner,
   Stack,
   Tag,
   TagLeftIcon,
   Text,
-  useToast,
   Wrap,
 } from "@chakra-ui/react";
 import Case from "case";
 import NextLink from "next/link";
-import { FunctionComponent, useState } from "react";
-import { mutate } from "swr";
+import { FunctionComponent } from "react";
 import useAccount from "../hooks/use-account";
-import useClient from "../hooks/use-client";
+import useCourseSection from "../hooks/use-course-section";
 import useCurrentCourse from "../hooks/use-current-course";
 import useRoster from "../hooks/use-roster";
-import {
-  CourseSection,
-  Registration as RegistrationType,
-  Role,
-} from "../types";
+import { Role } from "../types";
 import Registration from "./registration";
 import Show from "./show";
 
 export interface CourseSectionProps {
-  courseSection: CourseSection;
+  id: string;
 }
 
-const CourseSection: FunctionComponent<CourseSectionProps> = ({
-  courseSection,
-}) => {
-  const toast = useToast();
-  const client = useClient();
+const CourseSection: FunctionComponent<CourseSectionProps> = ({ id }) => {
   const account = useAccount();
   const course = useCurrentCourse();
-  const roster = useRoster(course.data?.id, courseSection.id);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
+  const roster = useRoster(course.data?.id, id);
+  const courseSection = useCourseSection(course.data?.id, id);
   const registrations = roster.data
     ? [...roster.data.students, ...roster.data.waitlist]
     : [];
   const isRegistered = registrations.some((r) => r.userId === account.data?.id);
-
-  const registerCourseSection = async () => {
-    try {
-      setIsRegistering(true);
-      const newRegistration = await client.post<RegistrationType>(
-        `/courses/${course.data?.id}/sections/${courseSection.id}/registrations`
-      );
-      await roster.mutate({
-        students: [...(roster.data?.students || []), newRegistration.data],
-        waitlist: roster.data?.waitlist || [],
-      });
-      toast({ status: "success", title: "Registered for Course Section" });
-    } catch (err) {
-      toast({ status: "error", title: "Error Registering for Course Section" });
-    } finally {
-      setIsRegistering(false);
-    }
-  };
-
-  const unregisterCourseSection = async () => {
-    try {
-      setIsRegistering(true);
-      await client.delete(
-        `/courses/${course.data?.id}/sections/${courseSection.id}/registrations`
-      );
-      await roster.mutate({
-        students:
-          roster.data?.students.filter((r) => r.userId !== account.data?.id) ||
-          [],
-        waitlist:
-          roster.data?.waitlist.filter((r) => r.userId !== account.data?.id) ||
-          [],
-      }),
-        toast({ status: "success", title: "Unregistered for Course Section" });
-    } catch (err) {
-      toast({
-        status: "error",
-        title: "Error Unregistering for Course Section",
-      });
-    } finally {
-      setIsRegistering(false);
-    }
-  };
-
-  const deleteCourseSection = async () => {
-    if (!course.data) {
-      return;
-    }
-
-    try {
-      setIsDeleting(true);
-      await client.delete(
-        `/courses/${course.data.id}/sections/${courseSection.id}`
-      );
-
-      // Remove course section
-      await mutate(
-        `/courses/${course.data.id}/sections/${courseSection.id}`,
-        undefined
-      );
-
-      // Remove course section from course
-      await course.mutate({
-        ...course.data,
-        courseSections: course.data.courseSections.filter(
-          (cs) => cs.id !== courseSection.id
-        ),
-      });
-
-      toast({ status: "success", title: "Course Section Deleted" });
-    } catch (err) {
-      toast({ status: "error", title: "Error Deleting Course Section" });
-    } finally {
-      setIsDeleting(false);
-    }
-  };
 
   if (
     course.isLoading ||
@@ -137,26 +49,21 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
     roster.isLoading ||
     !roster.data ||
     account.isLoading ||
-    !account.data
+    !account.data ||
+    courseSection.isLoading ||
+    !courseSection.data
   ) {
-    return (
-      <Center paddingY={10}>
-        <Stack align="center" spacing={5}>
-          <Text variant="secondary">Loading...</Text>
-          <Spinner />
-        </Stack>
-      </Center>
-    );
+    return <Skeleton height={200} />;
   }
 
   return (
-    <Card key={courseSection.id}>
+    <Card>
       <CardBody>
         <Stack spacing={5}>
           <Wrap justify="end">
             <Show roles={[Role.ADMINISTRATOR]}>
               <NextLink
-                href={`/courses/${course.data?.id}/sections/${courseSection.id}/edit`}
+                href={`/courses/${course.data.id}/sections/${courseSection.data.id}/edit`}
                 passHref
                 legacyBehavior
               >
@@ -165,7 +72,6 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
                   size="sm"
                   colorScheme="teal"
                   variant="outline"
-                  isDisabled={isDeleting}
                   leftIcon={<EditIcon />}
                 >
                   Edit
@@ -176,8 +82,8 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
                 colorScheme="red"
                 variant="outline"
                 leftIcon={<DeleteIcon />}
-                isLoading={isDeleting}
-                onClick={() => deleteCourseSection()}
+                isLoading={courseSection.isRemoving}
+                onClick={() => courseSection.remove()}
               >
                 Delete
               </Button>
@@ -187,8 +93,8 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
                 size="sm"
                 colorScheme="red"
                 leftIcon={<SmallCloseIcon />}
-                isLoading={isRegistering}
-                onClick={() => unregisterCourseSection()}
+                isLoading={courseSection.isUnregistering}
+                onClick={() => courseSection.unregister()}
               >
                 Unregister
               </Button>
@@ -197,8 +103,8 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
                 size="sm"
                 colorScheme="teal"
                 leftIcon={<SmallAddIcon />}
-                isLoading={isRegistering}
-                onClick={() => registerCourseSection()}
+                isLoading={courseSection.isRegistering}
+                onClick={() => courseSection.register()}
               >
                 Register
               </Button>
@@ -208,7 +114,7 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
             <Stack>
               <Heading fontSize="md">Instructors</Heading>
               <Text flex={1} textAlign="left">
-                {courseSection.instructors
+                {courseSection.data.instructors
                   .map(
                     (instructor) =>
                       `${instructor.firstName} ${instructor.lastName}`
@@ -221,7 +127,7 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
               <Heading textAlign="right" fontSize="md">
                 Meetings
               </Heading>
-              {courseSection.meetings.map((meeting, i) => (
+              {courseSection.data.meetings.map((meeting, i) => (
                 <Tag key={i}>
                   <TagLeftIcon as={TimeIcon} />
                   {`${meeting.startTime}-${meeting.endTime} ${meeting.daysOfWeek
