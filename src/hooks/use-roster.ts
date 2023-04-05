@@ -4,6 +4,11 @@ import { Registration } from "../types";
 import useAuth from "./use-auth";
 import useClient from "./use-client";
 
+export interface Roster {
+  students: Registration[];
+  waitlist: Registration[];
+}
+
 /**
  * Fetches the registrations for a section.
  * @param courseId - The course id.
@@ -11,16 +16,16 @@ import useClient from "./use-client";
  * @returns The registrations for a section.
  * @example const { data: registrations, error } = useRegistrations(courseId, sectionId);
  */
-const useRegistrations = (courseId?: string, sectionId?: string) => {
+const useRoster = (courseId?: string, sectionId?: string) => {
   const client = useClient();
   const { isAuthenticated } = useAuth();
 
-  return useSwr<Registration[], AxiosError>(
+  return useSwr<Roster, AxiosError>(
     isAuthenticated && courseId && sectionId
-      ? `/courses/${courseId}/sections/${sectionId}/registrations`
+      ? `/courses/${courseId}/sections/${sectionId}/roster`
       : null,
-    async (path) => (await client.get<Registration[]>(path)).data
+    async (path) => (await client.get<Roster>(path)).data
   );
 };
 
-export default useRegistrations;
+export default useRoster;
