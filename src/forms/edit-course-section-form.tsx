@@ -3,7 +3,11 @@ import {
   Alert,
   Button,
   Center,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
   Heading,
+  Input,
   Spinner,
   Stack,
   Text,
@@ -23,6 +27,7 @@ import MeetingsForm from "./meetings-form";
 import PeoplePickerForm from "./people-picker-form";
 
 const schema = z.object({
+  capacity: z.coerce.number().min(1),
   instructorIds: z.array(z.string()).min(1),
   meetings: z
     .array(
@@ -53,6 +58,7 @@ const EditCourseSectionForm: FunctionComponent = () => {
     handleSubmit,
     setValue,
     reset,
+    register,
     formState: { errors, isSubmitting },
   } = methods;
 
@@ -142,6 +148,11 @@ const EditCourseSectionForm: FunctionComponent = () => {
         </Stack>
         <form onSubmit={handleSubmit(submitHandler)}>
           <Stack spacing={5}>
+            <FormControl isInvalid={errors.capacity !== undefined} isRequired>
+              <FormLabel>Capacity</FormLabel>
+              <Input {...register("capacity")} type="number" />
+              <FormErrorMessage>{errors.capacity?.message}</FormErrorMessage>
+            </FormControl>
             <Heading fontSize="2xl">Meetings</Heading>
             <MeetingsForm fieldName="meetings" />
             <Button

@@ -6,7 +6,6 @@ import {
   TimeIcon,
 } from "@chakra-ui/icons";
 import {
-  Avatar,
   Button,
   Card,
   CardBody,
@@ -28,8 +27,13 @@ import { mutate } from "swr";
 import useAccount from "../hooks/use-account";
 import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
-import useRegistrations from "../hooks/use-registrations";
-import { CourseSection, Registration, Role } from "../types";
+import useRoster from "../hooks/use-roster";
+import {
+  CourseSection,
+  Registration as RegistrationType,
+  Role,
+} from "../types";
+import Registration from "./registration";
 import Show from "./show";
 
 export interface CourseSectionProps {
@@ -43,23 +47,24 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
   const client = useClient();
   const account = useAccount();
   const course = useCurrentCourse();
-  const registrations = useRegistrations(course.data?.id, courseSection.id);
+  const roster = useRoster(course.data?.id, courseSection.id);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
-  const isRegistered = registrations.data?.some(
-    (r) => r.userId === account.data?.id
-  );
+  const registrations = roster.data
+    ? [...roster.data.students, ...roster.data.waitlist]
+    : [];
+  const isRegistered = registrations.some((r) => r.userId === account.data?.id);
 
   const registerCourseSection = async () => {
     try {
       setIsRegistering(true);
-      const newRegistration = await client.post<Registration>(
+      const newRegistration = await client.post<RegistrationType>(
         `/courses/${course.data?.id}/sections/${courseSection.id}/registrations`
       );
-      await registrations.mutate([
-        ...(registrations.data || []),
-        newRegistration.data,
-      ]);
+      await roster.mutate({
+        students: [...(roster.data?.students || []), newRegistration.data],
+        waitlist: roster.data?.waitlist || [],
+      });
       toast({ status: "success", title: "Registered for Course Section" });
     } catch (err) {
       toast({ status: "error", title: "Error Registering for Course Section" });
@@ -74,11 +79,15 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
       await client.delete(
         `/courses/${course.data?.id}/sections/${courseSection.id}/registrations`
       );
-      await registrations.mutate([
-        ...(registrations.data?.filter((r) => r.userId !== account.data?.id) ||
-          []),
-      ]);
-      toast({ status: "success", title: "Unregistered for Course Section" });
+      await roster.mutate({
+        students:
+          roster.data?.students.filter((r) => r.userId !== account.data?.id) ||
+          [],
+        waitlist:
+          roster.data?.waitlist.filter((r) => r.userId !== account.data?.id) ||
+          [],
+      }),
+        toast({ status: "success", title: "Unregistered for Course Section" });
     } catch (err) {
       toast({
         status: "error",
@@ -125,8 +134,8 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
   if (
     course.isLoading ||
     !course.data ||
-    registrations.isLoading ||
-    !registrations.data ||
+    roster.isLoading ||
+    !roster.data ||
     account.isLoading ||
     !account.data
   ) {
@@ -223,18 +232,20 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({
             </Stack>
           </Wrap>
           <Stack>
-            {registrations.data.map((registration) => {
-              const fullName = `${registration.user.firstName} ${registration.user.lastName}`;
-              return (
-                <Wrap key={registration.id} spacing={2} align="center">
-                  <Avatar name={fullName} size="xs" />
-                  <Text>{fullName}</Text>
-                  <Tag size="sm" colorScheme="green">
-                    Registered
-                  </Tag>
-                </Wrap>
-              );
-            })}
+            {roster.data.students.map((registration) => (
+              <Registration
+                key={registration.id}
+                registration={registration}
+                status="student"
+              />
+            ))}
+            {roster.data.waitlist.map((registration) => (
+              <Registration
+                key={registration.id}
+                registration={registration}
+                status="waitlist"
+              />
+            ))}
           </Stack>
         </Stack>
       </CardBody>

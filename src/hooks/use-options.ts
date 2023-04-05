@@ -13,6 +13,11 @@ export interface Response {
   terms: Option[];
 }
 
+/**
+ * Fetches the options for the application.
+ * @returns The options for the application.
+ * @example const { data: options, error } = useOptions();
+ */
 const useOptions = () => {
   const client = useClient();
 

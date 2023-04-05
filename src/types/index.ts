@@ -19,6 +19,7 @@ export type Registration = {
   userId: string;
   user: User;
   courseSectionId: string;
+  priority: boolean;
 };
 
 export type Course = {
@@ -37,6 +38,7 @@ export type CourseSection = {
   meetings: Meeting[];
   instructorIds: string[];
   instructors: User[];
+  capacity: number;
 };
 
 export enum DayOfWeek {
