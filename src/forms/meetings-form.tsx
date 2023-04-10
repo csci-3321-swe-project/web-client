@@ -17,22 +17,17 @@ import {
 import Case from "case";
 import { FunctionComponent } from "react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import { DayOfWeek } from "../types";
+import { DayOfWeek, Meeting } from "../types";
 
-interface Meeting {
-  daysOfWeek: DayOfWeek[];
-  startTime: string;
-  endTime: string;
-  location: string;
-}
+export type MeetingFields = Omit<Meeting, "id">;
 
-interface MeetingsFormProps {
+export interface MeetingsFormProps {
   fieldName: string;
 }
 
 const MeetingsForm: FunctionComponent<MeetingsFormProps> = ({ fieldName }) => {
   interface Values {
-    [fieldName: string]: Meeting[];
+    [fieldName: string]: MeetingFields[];
   }
 
   const {
@@ -42,7 +37,7 @@ const MeetingsForm: FunctionComponent<MeetingsFormProps> = ({ fieldName }) => {
     setValue,
   } = useFormContext<Values>();
   const meetings = useFieldArray({ name: "meetings", control });
-  const defaultMeeting = {
+  const defaultMeeting: MeetingFields = {
     daysOfWeek: [],
     endTime: "",
     startTime: "",

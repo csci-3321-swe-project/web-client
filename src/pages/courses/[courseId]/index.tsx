@@ -77,7 +77,9 @@ const CoursePage: NextPage = () => {
               <HStack>
                 <Badge>{Case.title(course.data.department)}</Badge>
                 <Badge>{course.data.code}</Badge>
-                <Badge>{Case.title(course.data.term)}</Badge>
+                <Badge>{`${Case.title(course.data.term.season)} ${
+                  course.data.term.year
+                }`}</Badge>
               </HStack>
               <Heading>{`${course.data.name}`} </Heading>
             </Stack>

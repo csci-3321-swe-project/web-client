@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
+import Case from "case";
 import { useRouter } from "next/router";
 import { FunctionComponent, useEffect, useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -23,12 +24,13 @@ import { z } from "zod";
 import useClient from "../hooks/use-client";
 import useCurrentCourse from "../hooks/use-current-course";
 import useOptions from "../hooks/use-options";
+import useTerms from "../hooks/use-terms";
 import { Course } from "../types";
 import { placeholders } from "../utilities/constants";
 
 const schema = z.object({
   name: z.string(),
-  term: z.string(),
+  termId: z.string(),
   department: z.string(),
   code: z.coerce.number(),
   description: z.string(),
@@ -41,6 +43,7 @@ const EditCourseForm: FunctionComponent = () => {
   const router = useRouter();
   const client = useClient();
   const toast = useToast();
+  const terms = useTerms();
   const options = useOptions();
   const {
     reset,
@@ -82,7 +85,14 @@ const EditCourseForm: FunctionComponent = () => {
     reset(course.data);
   }, [course.data, reset]);
 
-  if (course.isLoading || !course.data || options.isLoading || !options.data) {
+  if (
+    course.isLoading ||
+    !course.data ||
+    options.isLoading ||
+    !options.data ||
+    terms.isLoading ||
+    !terms.data
+  ) {
     return (
       <Center paddingY={10}>
         <Stack align="center" spacing={5}>
@@ -98,14 +108,14 @@ const EditCourseForm: FunctionComponent = () => {
       <Stack spacing={5}>
         <FormControl
           isDisabled={options.isLoading || course.isLoading}
-          isInvalid={errors.term !== undefined}
+          isInvalid={errors.termId !== undefined}
           isRequired
         >
           <FormLabel>Term</FormLabel>
-          <Select placeholder="Select Term" {...register("term")}>
-            {options.data.terms.map(({ name, value }) => (
-              <option key={value} value={value}>
-                {name}
+          <Select placeholder="Select Term" {...register("termId")}>
+            {terms.data.map(({ id, season, year }) => (
+              <option key={id} value={id}>
+                {`${Case.title(season)} ${year}`}
               </option>
             ))}
           </Select>

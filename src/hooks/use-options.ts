@@ -10,7 +10,7 @@ export interface Response {
   roles: Option[];
   departments: Option[];
   daysOfWeek: Option[];
-  terms: Option[];
+  seasons: Option[];
 }
 
 /**
