@@ -56,7 +56,7 @@ const SearchForm: FunctionComponent = () => {
     try {
       const searchParams = new URLSearchParams();
       data.search.split(" ").forEach((word) => searchParams.append("q", word));
-      if (data.termId) searchParams.set("term", data.termId);
+      if (data.termId) searchParams.set("termId", data.termId);
       if (data.department) searchParams.set("dept", data.department);
 
       const res = await client.get<Course[]>(
