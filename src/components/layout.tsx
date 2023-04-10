@@ -1,4 +1,4 @@
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, SettingsIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -13,6 +13,8 @@ import {
 import NextLink from "next/link";
 import { FunctionComponent, PropsWithChildren } from "react";
 import useAuth from "../hooks/use-auth";
+import { Role } from "../types";
+import Show from "./show";
 
 const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
   const toast = useToast();
@@ -20,19 +22,33 @@ const Layout: FunctionComponent<PropsWithChildren> = ({ children }) => {
 
   return (
     <Stack>
-      <Flex direction="row" align="center" padding={5} width="100%" shadow="md">
+      <Flex
+        gap={5}
+        direction="row"
+        align="center"
+        padding={5}
+        width="100%"
+        shadow="md"
+      >
         <NextLink href="/" passHref legacyBehavior>
           <Link color="red.800" fontWeight="bold" fontSize="xl">
             Trinity Register
           </Link>
         </NextLink>
         <Spacer />
+        <Show roles={[Role.ADMINISTRATOR]}>
+          <NextLink href="/settings" passHref legacyBehavior>
+            <Button leftIcon={<SettingsIcon />} colorScheme="teal" as="a">
+              Settings
+            </Button>
+          </NextLink>
+        </Show>
         {isAuthenticated ? (
           <Button
-            colorScheme="teal"
             rightIcon={<ArrowForwardIcon />}
             isLoading={isLoading}
             onClick={() => logout()}
+            variant="link"
           >
             Logout
           </Button>
