@@ -26,6 +26,7 @@ import useCourseSection from "../hooks/use-course-section";
 import useCurrentCourse from "../hooks/use-current-course";
 import useRoster from "../hooks/use-roster";
 import { Role } from "../types";
+import AuditData from "./audit-data";
 import Registration from "./registration";
 import Show from "./show";
 
@@ -87,6 +88,8 @@ const CourseSection: FunctionComponent<CourseSectionProps> = ({ id }) => {
               >
                 Delete
               </Button>
+
+              <AuditData data={courseSection.data} />
             </Show>
             {isRegistered ? (
               <Button

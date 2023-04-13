@@ -20,6 +20,7 @@ import { NextPage } from "next";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import AuditData from "../../../components/audit-data";
 import CourseSection from "../../../components/course-section";
 import Show from "../../../components/show";
 import useClient from "../../../hooks/use-client";
@@ -72,7 +73,7 @@ const CoursePage: NextPage = () => {
               Search Courses
             </Button>
           </NextLink>
-          <Wrap spacing={5} align="center">
+          <Wrap spacing={5} alignItems="center">
             <Stack>
               <HStack>
                 <Badge>{Case.title(course.data.department)}</Badge>
@@ -102,6 +103,7 @@ const CoursePage: NextPage = () => {
               >
                 Delete
               </Button>
+              <AuditData data={course.data} />
             </Show>
           </Wrap>
         </Stack>
