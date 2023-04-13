@@ -1,6 +1,10 @@
 import axios from "axios";
 import useToken from "./use-token";
 
+/**
+ *  Creates an axios client with the user's token.
+ * @returns The axios client.
+ */
 const useClient = () => {
   const [token] = useToken();
 

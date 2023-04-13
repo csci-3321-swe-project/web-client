@@ -1,3 +1,7 @@
+/**
+ * Model Meeting
+ *
+ */
 export type Meeting = {
   daysOfWeek: DayOfWeek[];
   startTime: string;
@@ -5,6 +9,10 @@ export type Meeting = {
   location: string;
 };
 
+/**
+ * Model User
+ *
+ */
 export type User = {
   id: string;
   isMock: boolean;
@@ -12,18 +20,30 @@ export type User = {
   email: string;
   firstName: string;
   lastName: string;
+  instructingIds: string[];
 };
 
+/**
+ * Model Registration
+ *
+ */
 export type Registration = {
   id: string;
   userId: string;
-  user: User;
   courseSectionId: string;
+  createdAt: Date;
+  priority: boolean;
+  user: User;
 };
 
+/**
+ * Model Course
+ *
+ */
 export type Course = {
   id: string;
   name: string;
+  termId: string;
   term: Term;
   department: Department;
   code: number;
@@ -31,14 +51,34 @@ export type Course = {
   courseSections: CourseSection[];
 };
 
+/**
+ * Model CourseSection
+ *
+ */
 export type CourseSection = {
   id: string;
   courseId: string;
   meetings: Meeting[];
   instructorIds: string[];
   instructors: User[];
+  capacity: number;
 };
 
+/**
+ * Model Term
+ *
+ */
+export type Term = {
+  id: string;
+  season: Season;
+  year: number;
+  startTime: string;
+  endTime: string;
+};
+
+/**
+ * Enums
+ */
 export enum DayOfWeek {
   MONDAY = "MONDAY",
   TUESDAY = "TUESDAY",
@@ -74,10 +114,7 @@ export enum Role {
   ADMINISTRATOR = "ADMINISTRATOR",
 }
 
-export enum Term {
-  SPRING_2021 = "SPRING_2021",
-  FALL_2021 = "FALL_2021",
-  SPRING_2022 = "SPRING_2022",
-  FALL_2022 = "FALL_2022",
-  SPRING_2023 = "SPRING_2023",
+export enum Season {
+  FALL = "FALL",
+  SPRING = "SPRING",
 }

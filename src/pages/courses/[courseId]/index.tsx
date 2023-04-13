@@ -1,6 +1,5 @@
 import { AddIcon, ArrowBackIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
-  Alert,
   Badge,
   Button,
   Card,
@@ -21,6 +20,7 @@ import { NextPage } from "next";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import AuditData from "../../../components/audit-data";
 import CourseSection from "../../../components/course-section";
 import Show from "../../../components/show";
 import useClient from "../../../hooks/use-client";
@@ -48,16 +48,6 @@ const CoursePage: NextPage = () => {
     }
   };
 
-  if (course.error !== undefined) {
-    return (
-      <Container>
-        <Center paddingY={10}>
-          <Alert status="error">{course.error.message}</Alert>
-        </Center>
-      </Container>
-    );
-  }
-
   if (course.isLoading || !course.data) {
     return (
       <Center paddingY={10}>
@@ -83,12 +73,14 @@ const CoursePage: NextPage = () => {
               Search Courses
             </Button>
           </NextLink>
-          <Wrap spacing={5} align="center">
+          <Wrap spacing={5} alignItems="center">
             <Stack>
               <HStack>
                 <Badge>{Case.title(course.data.department)}</Badge>
                 <Badge>{course.data.code}</Badge>
-                <Badge>{Case.title(course.data.term)}</Badge>
+                <Badge>{`${Case.title(course.data.term.season)} ${
+                  course.data.term.year
+                }`}</Badge>
               </HStack>
               <Heading>{`${course.data.name}`} </Heading>
             </Stack>
@@ -111,6 +103,7 @@ const CoursePage: NextPage = () => {
               >
                 Delete
               </Button>
+              <AuditData data={course.data} />
             </Show>
           </Wrap>
         </Stack>
@@ -123,10 +116,7 @@ const CoursePage: NextPage = () => {
           {course.data.courseSections.length ? (
             <Stack spacing={5}>
               {course.data.courseSections.map((courseSection) => (
-                <CourseSection
-                  key={courseSection.id}
-                  courseSection={courseSection}
-                />
+                <CourseSection key={courseSection.id} id={courseSection.id} />
               ))}
               <Show roles={[Role.ADMINISTRATOR]}>
                 <Center>

@@ -4,6 +4,12 @@ import { Course } from "../types";
 import useAuth from "./use-auth";
 import useClient from "./use-client";
 
+/**
+ * Fetches a course by id.
+ * @param id - The course id.
+ * @returns The course.
+ * @example const { data: course, error } = useCourse(id);
+ */
 const useCourse = (id?: string) => {
   const client = useClient();
   const { isAuthenticated } = useAuth();

@@ -10,9 +10,14 @@ export interface Response {
   roles: Option[];
   departments: Option[];
   daysOfWeek: Option[];
-  terms: Option[];
+  seasons: Option[];
 }
 
+/**
+ * Fetches the options for the application.
+ * @returns The options for the application.
+ * @example const { data: options, error } = useOptions();
+ */
 const useOptions = () => {
   const client = useClient();
 

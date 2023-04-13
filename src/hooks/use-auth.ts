@@ -4,7 +4,19 @@ import { useState } from "react";
 import { mutate } from "swr";
 import useToken from "./use-token";
 
-const useAuth = () => {
+export interface UseAuthResponse {
+  isLoading: boolean;
+  login: (token: string) => Promise<void>;
+  logout: () => Promise<void>;
+  isAuthenticated: boolean;
+}
+
+/**
+ * Manages the user's authentication state.
+ * @returns The current user's account information.
+ * @example const { isLoading, login, logout, isAuthenticated } = useAuth();
+ */
+const useAuth = (): UseAuthResponse => {
   const router = useRouter();
   const toast = useToast();
   const [token, setToken] = useToken();

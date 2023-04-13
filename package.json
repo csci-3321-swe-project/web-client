@@ -21,6 +21,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.5",
+    "react-json-pretty": "^2.2.0",
     "swr": "^2.1.0",
     "use-local-storage-state": "^18.2.1",
     "yup": "^1.0.2",

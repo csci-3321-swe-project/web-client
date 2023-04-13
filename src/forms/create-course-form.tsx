@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
+import Case from "case";
 import { useRouter } from "next/router";
 import { FunctionComponent } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -23,12 +24,13 @@ import { mutate } from "swr";
 import { z } from "zod";
 import useClient from "../hooks/use-client";
 import useOptions from "../hooks/use-options";
+import useTerms from "../hooks/use-terms";
 import { Course } from "../types";
 import { placeholders } from "../utilities/constants";
 
 const schema = z.object({
   name: z.string(),
-  term: z.string(),
+  termId: z.string(),
   department: z.string(),
   code: z.coerce.number(),
   description: z.string(),
@@ -38,6 +40,7 @@ type Values = z.infer<typeof schema>;
 
 const CreateCourseForm: FunctionComponent = () => {
   const client = useClient();
+  const terms = useTerms();
   const router = useRouter();
   const toast = useToast();
   const options = useOptions();
@@ -50,6 +53,7 @@ const CreateCourseForm: FunctionComponent = () => {
   });
 
   const submitHandler: SubmitHandler<Values> = async (data) => {
+    console.log(data);
     try {
       const newCourse = await client.post<Course>("/courses", data);
       await mutate(`/courses/${newCourse.data.id}`, newCourse);
@@ -68,7 +72,7 @@ const CreateCourseForm: FunctionComponent = () => {
     }
   };
 
-  if (options.isLoading || !options.data) {
+  if (options.isLoading || !options.data || terms.isLoading || !terms.data) {
     return (
       <Center paddingY={10}>
         <Stack align="center" spacing={5}>
@@ -82,16 +86,16 @@ const CreateCourseForm: FunctionComponent = () => {
   return (
     <form onSubmit={handleSubmit(submitHandler)}>
       <Stack spacing={5}>
-        <FormControl isInvalid={errors.term !== undefined} isRequired>
+        <FormControl isInvalid={errors.termId !== undefined} isRequired>
           <FormLabel>Term</FormLabel>
           <Select
             placeholder="Select Term"
             disabled={options.isLoading}
-            {...register("term")}
+            {...register("termId")}
           >
-            {options.data.terms.map(({ name, value }) => (
-              <option key={value} value={value}>
-                {name}
+            {terms.data.map(({ id, season, year }) => (
+              <option key={id} value={id}>
+                {`${Case.title(season)} ${year}`}
               </option>
             ))}
           </Select>
