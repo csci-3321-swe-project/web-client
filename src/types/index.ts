@@ -21,6 +21,7 @@ export type User = {
   firstName: string;
   lastName: string;
   instructingIds: string[];
+  registrations: Registration[];
 };
 
 /**
@@ -31,6 +32,7 @@ export type Registration = {
   id: string;
   userId: string;
   courseSectionId: string;
+  courseSection: CourseSection;
   createdAt: Date;
   priority: boolean;
   user: User;
@@ -58,6 +60,7 @@ export type Course = {
 export type CourseSection = {
   id: string;
   courseId: string;
+  course: Course;
   meetings: Meeting[];
   instructorIds: string[];
   instructors: User[];

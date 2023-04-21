@@ -77,8 +77,6 @@ const SearchForm: FunctionComponent = () => {
     }
   };
 
-  console.log(courses);
-
   if (options.isLoading || !options.data || terms.isLoading || !terms.data) {
     return (
       <Center paddingY={10}>

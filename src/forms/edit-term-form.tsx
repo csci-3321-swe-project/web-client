@@ -56,8 +56,6 @@ const EditTermForm: FunctionComponent = () => {
       return;
     }
 
-    console.log(new Date(term.data?.startTime).toDateString().slice(0, 10));
-
     reset({
       ...term.data,
       startTime: new Date(term.data?.startTime).toISOString().slice(0, 10),
@@ -66,7 +64,6 @@ const EditTermForm: FunctionComponent = () => {
   }, [term.data, reset]);
 
   const submitHandler: SubmitHandler<Values> = async (data) => {
-    console.log(data);
     if (!term.data) {
       return;
     }
@@ -76,7 +73,6 @@ const EditTermForm: FunctionComponent = () => {
         `/terms/${term.data.id}`,
         data
       );
-      console.log(updatedTerm);
       await mutate(`/terms/${term.data.id}`, updatedTerm.data);
       await mutate(`/terms`);
       await router.push("/terms");
