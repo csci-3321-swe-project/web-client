@@ -53,7 +53,6 @@ const CreateCourseForm: FunctionComponent = () => {
   });
 
   const submitHandler: SubmitHandler<Values> = async (data) => {
-    console.log(data);
     try {
       const newCourse = await client.post<Course>("/courses", data);
       await mutate(`/courses/${newCourse.data.id}`, newCourse);

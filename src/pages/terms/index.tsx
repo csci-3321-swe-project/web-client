@@ -31,7 +31,7 @@ const TermsPage: NextPage = () => {
       </Center>
     );
   }
-  console.log(terms.data);
+
   return (
     <Container marginY={10}>
       <Card>
