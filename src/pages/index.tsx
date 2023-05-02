@@ -65,7 +65,7 @@ const Home: NextPage = () => {
               {account.data.registrations.map((registration) => (
                 <NextLink
                   key={registration.id}
-                  href={`/courses/${registration.courseSection.course.code}`}
+                  href={\`/courses/${registration.courseSection.course.id}\`}
                   passHref
                   legacyBehavior
                 >
